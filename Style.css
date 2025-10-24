@@ -1,3 +1,13 @@
+/* FONT STYLING */
+h1 {
+  font-family: "Garamond", serif;
+  padding-top: 20px;
+  text-align: center;
+  /* Forcing text size change */
+  font-size: 50px !important;
+}
+
+/* HEADER CURVES */
 .Curve {
     position: absolute;
     top: 0;
