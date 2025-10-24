@@ -1,0 +1,28 @@
+.Curve {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.Curve svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.Curve .wave-back {
+    fill: #c4b4a1;
+}
+
+.Curve .wave-middle {
+    fill: #ae9474;
+}
+
+.Curve .wave-front {
+    fill: #dac6a6; 
+}
