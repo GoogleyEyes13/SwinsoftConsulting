@@ -11,17 +11,69 @@
 </head>
 
 <body>
-    <h1 class="text-center">Swinsoft Consulting</h1>
+    <strong><h1 class="text-center">Swinsoft Consulting</h1></strong>
     <div class="container-fluid text-center">
+        <!-- Filtering, search bar and shopping cart -->
         <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-4">
-                <p>Bootstrap column 1</p>
+            <div class="col-sm-12 col-md-6 col-lg-4" style="text-align: left;">
+            <strong><p style="font-size: 25px;">Filters</p></strong>
+
+            <div class="row mb-2">
+                <div class="col-4">
+                <label for="ItemType">Item type:</label>
+                </div>
+                <div class="col-8">
+                <select name="ItemType" id="ItemType">
+                    <option value="Eg1">Eg1</option>
+                    <option value="Eg2">Eg2</option>
+                </select>
+                </div>
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-4">
-                <p>Bootstrap column 2</p>
+
+            <div class="row mb-2">
+                <div class="col-4">
+                <label for="Category">Category:</label>
+                </div>
+                <div class="col-8">
+                <select name="Category" id="Category">
+                    <option value="Eg1">Eg1</option>
+                    <option value="Eg2">Eg2</option>
+                </select>
+                </div>
             </div>
-            <div class="col-sm-12 col-md-6 col-lg-4">
-                <p>Bootstrap column 3</p>
+
+            <div class="row mb-2">
+                <div class="col-4">
+                <label for="Price">Price:</label>
+                </div>
+                <div class="col-8">
+                <select name="Price" id="Price">
+                    <option value="Eg1">Eg1</option>
+                    <option value="Eg2">Eg2</option>
+                </select>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-4">
+                <label for="Availability">Availability:</label>
+                </div>
+                <div class="col-8">
+                <select name="Availability" id="Availability">
+                    <option value="Eg1">Eg1</option>
+                    <option value="Eg2">Eg2</option>
+                </select>
+                </div>
+            </div>
+            </div>
+
+
+            <div class="col-sm-12 col-md-6 col-lg-4" style="padding-top: 25px">
+                <p>Search for items: <input type="text" placeholder="Search.."></p>
+            </div>
+
+            <div class="col-sm-12 col-md-6 col-lg-4" style="text-align: right;">
+                <button type="button" class="btn btn-primary"><p>Shopping Cart</p></button>
             </div>
         </div>
     </div>
