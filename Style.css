@@ -7,6 +7,10 @@ h1 {
   font-size: 50px !important;
 }
 
+.Font {
+    font-family: "Garamond", serif;
+}
+
 /* HEADER CURVES */
 .Curve {
     position: absolute;
