@@ -176,11 +176,11 @@
 
                     <div class="row">
                         <div class="col-6">
-                        <label for="ItemType">Item Type:</label>
+                        <label for="Type">Type:</label>
                         </div>
                         <div class="col-6">
-                        <select name="ItemType" id="ItemType">
-                            <option value="">All Items</option>
+                        <select name="Type" id="Type">
+                            <option value="">All Types</option>
                         </select>
                         </div>
                     </div>
@@ -267,16 +267,21 @@
             document.addEventListener('DOMContentLoaded', () => {
                 const ProductList = document.getElementById('productsContainer');
 
+                // Add cache-busting parameter to ensure fresh data is loaded
+                // This ensures that any changes made in the admin panel are reflected
+                const timestamp = new Date().getTime();
+                const dbUrl = `Backend/Database.json?t=${timestamp}`;
+
                 // Fetching each element in the Product section of the database
                 // Then displaying it
-                fetch("Backend/Database.json")
+                fetch(dbUrl)
                     .then((res) => res.json())
                     .then((data) => {
                         globalAllProducts = data.Product;
                         
                         // Populate filters with real data
-                        populateItemTypeFilter();
                         populateCategoryFilter();
+                        populateTypeFilter();
                         populatePriceFilter();
                         
                         // Display all products initially
@@ -312,22 +317,22 @@
             }
 
             /**
-             * Populate Item Type dropdown with actual item types from data
+             * Populate Type dropdown with actual types from data
              */
-            function populateItemTypeFilter() {
-                const itemTypeSelect = document.getElementById('ItemType');
-                // Extract unique item types from products
-                const itemTypes = [...new Set(globalAllProducts.map(p => p.ItemType).filter(t => t))];
+            function populateTypeFilter() {
+                const typeSelect = document.getElementById('Type');
+                // Extract unique types from products
+                const types = [...new Set(globalAllProducts.map(p => p.Type))];
 
                 // Clear existing placeholder options
-                itemTypeSelect.innerHTML = '<option value="">All Items</option>';
+                typeSelect.innerHTML = '<option value="">All Types</option>';
 
-                // Add real item types
-                itemTypes.forEach(itemType => {
+                // Add real types
+                types.forEach(type => {
                     const option = document.createElement('option');
-                    option.value = itemType;
-                    option.textContent = itemType;
-                    itemTypeSelect.appendChild(option);
+                    option.value = type;
+                    option.textContent = type;
+                    typeSelect.appendChild(option);
                 });
             }
 
@@ -368,10 +373,10 @@
                     searchInput.addEventListener('change', applyFilters);
                 }
 
-                // Item Type filter
-                const itemTypeSelect = document.getElementById('ItemType');
-                if (itemTypeSelect) {
-                    itemTypeSelect.addEventListener('change', applyFilters);
+                // Type filter
+                const typeSelect = document.getElementById('Type');
+                if (typeSelect) {
+                    typeSelect.addEventListener('change', applyFilters);
                 }
 
                 // Category filter
@@ -398,7 +403,7 @@
              */
             function applyFilters() {
                 const searchKeyword = document.getElementById('searchKeyword')?.value || '';
-                const selectedItemType = document.getElementById('ItemType')?.value || '';
+                const selectedType = document.getElementById('Type')?.value || '';
                 const selectedCategory = document.getElementById('Category')?.value || '';
                 const selectedPrice = document.getElementById('Price')?.value || '';
                 const selectedAvailability = document.getElementById('Availability')?.value || '';
@@ -414,9 +419,9 @@
                     );
                 }
 
-                // Filter by item type
-                if (selectedItemType) {
-                    filtered = filtered.filter(product => product.ItemType === selectedItemType);
+                // Filter by type
+                if (selectedType) {
+                    filtered = filtered.filter(product => product.Type === selectedType);
                 }
 
                 // Filter by category

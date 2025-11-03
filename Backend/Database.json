@@ -6,29 +6,32 @@
             "Description": "Fresh whole milk, 1 liter bottle",
             "Price": 3.99,
             "Category": "Dairy",
+            "Type": "Perishable",
             "AvailableStock": 45,
             "Supplier": "Local Dairy Farm",
-            "Image": "Backend/ProductImages/milk.png"
+            "Image": "Backend/ProductImages/fresh_milk_1l_local_dairy_farm.png"
         },
         {
             "ProductID": 2,
             "Name": "Artisan Bread",
             "Description": "Freshly baked sourdough bread",
             "Price": 4.50,
-            "Category": "Bakery",
+            "Category": "Bread",
+            "Type": "Perishable",
             "AvailableStock": 20,
             "Supplier": "Local Bakery",
-            "Image": "Backend/ProductImages/bread.png"
+            "Image": "Backend/ProductImages/artisan_bread_local_bakery.png"
         },
         {
             "ProductID": 3,
             "Name": "Organic Coffee Beans 500g",
             "Description": "Premium specialty coffee beans from Ethiopia",
             "Price": 12.99,
-            "Category": "Specialty",
+            "Category": "Beverage",
+            "Type": "Consumable",
             "AvailableStock": 30,
             "Supplier": "Specialty Imports",
-            "Image": "Backend/ProductImages/coffee.png"
+            "Image": "Backend/ProductImages/organic_coffee_beans_500g_specialty_imports.png"
         },
         {
             "ProductID": 4,
@@ -36,29 +39,252 @@
             "Description": "Fresh free-range chicken eggs",
             "Price": 5.99,
             "Category": "Dairy",
+            "Type": "Perishable",
             "AvailableStock": 35,
             "Supplier": "Local Farm",
-            "Image": "Backend/ProductImages/eggs.png"
+            "Image": "Backend/ProductImages/free_range_eggs_12_pack_local_farm.png"
         },
         {
             "ProductID": 5,
             "Name": "Japanese Ramen Noodles",
             "Description": "Authentic instant ramen noodles, pack of 5",
             "Price": 8.99,
-            "Category": "Specialty",
+            "Category": "Pantry",
+            "Type": "Consumable",
             "AvailableStock": 50,
             "Supplier": "Import Food Co",
-            "Image": "Backend/ProductImages/ramen.png"
+            "Image": "Backend/ProductImages/japanese_ramen_noodles_import_food_co.png"
         },
         {
             "ProductID": 6,
             "Name": "Almond Butter 500g",
             "Description": "Natural almond butter, no added sugar",
             "Price": 9.99,
-            "Category": "Health Foods",
+            "Category": "Condiments",
+            "Type": "Consumable",
             "AvailableStock": 25,
             "Supplier": "Health Foods Inc",
-            "Image": "Backend/ProductImages/almonds.png"
+            "Image": "Backend/ProductImages/almond_butter_500g_health_foods_inc.png"
+        },
+        {
+            "ProductID": 7,
+            "Name": "Weet-Bix Breakfast Cereal 385g",
+            "Description": "Nutritious breakfast cereal with whole grain",
+            "Price": 5.50,
+            "Category": "Pantry",
+            "Type": "Consumable",
+            "AvailableStock": 42,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/weet_bix_breakfast_cereal_385g_woolworths.png"
+        },
+        {
+            "ProductID": 8,
+            "Name": "Coca-Cola Zero 1.25L",
+            "Description": "Zero sugar cola soft drink",
+            "Price": 3.50,
+            "Category": "Beverage",
+            "Type": "Consumable",
+            "AvailableStock": 68,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/coca_cola_zero_1.25l_woolworths.png"
+        },
+        {
+            "ProductID": 9,
+            "Name": "Kraft Peanut Butter 375g",
+            "Description": "Creamy peanut butter spread",
+            "Price": 4.99,
+            "Category": "Condiments",
+            "Type": "Consumable",
+            "AvailableStock": 38,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/kraft_peanut_butter_375g_woolworths.png"
+        },
+        {
+            "ProductID": 10,
+            "Name": "Vegemite 200g",
+            "Description": "Australian iconic yeast spread",
+            "Price": 4.60,
+            "Category": "Condiments",
+            "Type": "Consumable",
+            "AvailableStock": 32,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/vegemite_200g_woolworths.png"
+        },
+        {
+            "ProductID": 11,
+            "Name": "Anchor Butter 500g",
+            "Description": "Premium salted butter",
+            "Price": 6.99,
+            "Category": "Dairy",
+            "Type": "Perishable",
+            "AvailableStock": 28,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/anchor_butter_500g_woolworths.png"
+        },
+        {
+            "ProductID": 12,
+            "Name": "Goulburn Valley Orange Juice 2L",
+            "Description": "Fresh squeezed style orange juice",
+            "Price": 4.50,
+            "Category": "Beverage",
+            "Type": "Perishable",
+            "AvailableStock": 45,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/goulburn_valley_orange_juice_2l_woolworths.png"
+        },
+        {
+            "ProductID": 13,
+            "Name": "Cadbury Dairy Milk 200g",
+            "Description": "Classic chocolate bar",
+            "Price": 3.99,
+            "Category": "Confectionery",
+            "Type": "Consumable",
+            "AvailableStock": 55,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/cadbury_dairy_milk_200g_woolworths.png"
+        },
+        {
+            "ProductID": 14,
+            "Name": "Arnott's Tim Tams 200g",
+            "Description": "Australian biscuit treat",
+            "Price": 2.50,
+            "Category": "Confectionery",
+            "Type": "Consumable",
+            "AvailableStock": 72,
+            "Supplier": "Woolworths",
+            "Image": "Backend/ProductImages/arnotts_tim_tams_200g_woolworths.png"
+        },
+        {
+            "ProductID": 15,
+            "Name": "Coles Premium Apples 1kg",
+            "Description": "Fresh red apples, 1kg bag",
+            "Price": 4.20,
+            "Category": "Produce",
+            "Type": "Perishable",
+            "AvailableStock": 51,
+            "Supplier": "Coles",
+            "Image": "Backend/ProductImages/coles_premium_apples_1kg_coles.png"
+        },
+        {
+            "ProductID": 16,
+            "Name": "Coles Salmon Fillets 300g",
+            "Description": "Fresh Atlantic salmon fillets",
+            "Price": 12.99,
+            "Category": "Specialty",
+            "Type": "Perishable",
+            "AvailableStock": 15,
+            "Supplier": "Coles",
+            "Image": "Backend/ProductImages/coles_salmon_fillets_300g_coles.png"
+        },
+        {
+            "ProductID": 17,
+            "Name": "Coles Wholemeal Bread 720g",
+            "Description": "Healthy wholemeal bread loaf",
+            "Price": 3.20,
+            "Category": "Bread",
+            "Type": "Perishable",
+            "AvailableStock": 38,
+            "Supplier": "Coles",
+            "Image": "Backend/ProductImages/coles_wholemeal_bread_720g_coles.png"
+        },
+        {
+            "ProductID": 18,
+            "Name": "Sanitarium So Good Soy Milk 1L",
+            "Description": "Plant-based soy milk alternative",
+            "Price": 2.80,
+            "Category": "Beverage",
+            "Type": "Perishable",
+            "AvailableStock": 44,
+            "Supplier": "Coles",
+            "Image": "Backend/ProductImages/sanitarium_so_good_soy_milk_1l_coles.png"
+        },
+        {
+            "ProductID": 19,
+            "Name": "John West Tuna 425g",
+            "Description": "Canned tuna in springwater",
+            "Price": 2.99,
+            "Category": "Pantry",
+            "Type": "Consumable",
+            "AvailableStock": 58,
+            "Supplier": "Coles",
+            "Image": "Backend/ProductImages/john_west_tuna_425g_coles.png"
+        },
+        {
+            "ProductID": 20,
+            "Name": "Barilla Pasta 500g",
+            "Description": "Italian pasta (Penne, Spaghetti, or Fusilli)",
+            "Price": 1.99,
+            "Category": "Pantry",
+            "Type": "Consumable",
+            "AvailableStock": 76,
+            "Supplier": "Coles",
+            "Image": "Backend/ProductImages/barilla_pasta_500g_coles.png"
+        },
+        {
+            "ProductID": 21,
+            "Name": "Specially Selected Basil Pesto 165g",
+            "Description": "Fresh basil pesto sauce",
+            "Price": 2.49,
+            "Category": "Condiments",
+            "Type": "Consumable",
+            "AvailableStock": 33,
+            "Supplier": "Aldi",
+            "Image": "Backend/ProductImages/specially_selected_basil_pesto_165g_aldi.png"
+        },
+        {
+            "ProductID": 22,
+            "Name": "Specially Selected Gnocchi 500g",
+            "Description": "Italian potato gnocchi",
+            "Price": 2.29,
+            "Category": "Pantry",
+            "Type": "Consumable",
+            "AvailableStock": 41,
+            "Supplier": "Aldi",
+            "Image": "Backend/ProductImages/specially_selected_gnocchi_500g_aldi.png"
+        },
+        {
+            "ProductID": 23,
+            "Name": "Fresh Avocados 3 pack",
+            "Description": "Fresh ripe avocados, pack of 3",
+            "Price": 4.99,
+            "Category": "Produce",
+            "Type": "Perishable",
+            "AvailableStock": 28,
+            "Supplier": "Aldi",
+            "Image": "Backend/ProductImages/fresh_avocados_3_pack_aldi.png"
+        },
+        {
+            "ProductID": 24,
+            "Name": "Specially Selected Extra Virgin Olive Oil 500ml",
+            "Description": "Premium extra virgin olive oil",
+            "Price": 5.99,
+            "Category": "Condiments",
+            "Type": "Consumable",
+            "AvailableStock": 22,
+            "Supplier": "Aldi",
+            "Image": "Backend/ProductImages/specially_selected_extra_virgin_olive_oil_500ml_aldi.png"
+        },
+        {
+            "ProductID": 25,
+            "Name": "Specially Selected Belgian Chocolate 200g",
+            "Description": "Luxury Belgian chocolate bar",
+            "Price": 2.99,
+            "Category": "Confectionery",
+            "Type": "Consumable",
+            "AvailableStock": 47,
+            "Supplier": "Aldi",
+            "Image": "Backend/ProductImages/specially_selected_belgian_chocolate_200g_aldi.png"
+        },
+        {
+            "ProductID": 26,
+            "Name": "Specially Selected Risotto 300g",
+            "Description": "Arborio rice risotto mix",
+            "Price": 1.99,
+            "Category": "Pantry",
+            "Type": "Consumable",
+            "AvailableStock": 39,
+            "Supplier": "Aldi",
+            "Image": "Backend/ProductImages/specially_selected_risotto_300g_aldi.png"
         }
     ],
 

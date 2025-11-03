@@ -21,16 +21,18 @@ class Product {
      * @param {string} description - Product description
      * @param {number} price - Product price (AUD)
      * @param {string} category - Product category
+     * @param {string} type - Product type (Consumable, Perishable, etc.)
      * @param {number} availableStock - Current stock level
      * @param {string} supplier - Supplier name
      * @param {string} image - Image filename
      */
-    constructor(productID, name, description, price, category, availableStock, supplier, image) {
+    constructor(productID, name, description, price, category, type, availableStock, supplier, image) {
         this.productID = productID;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
+        this.type = type;
         this.availableStock = availableStock;
         this.supplier = supplier;
         this.image = image;
@@ -47,6 +49,7 @@ class Product {
             description: this.description,
             price: this.price,
             category: this.category,
+            type: this.type,
             availableStock: this.availableStock,
             supplier: this.supplier,
             image: this.image
@@ -102,6 +105,7 @@ class Product {
             Description: this.description,
             Price: this.price,
             Category: this.category,
+            Type: this.type,
             AvailableStock: this.availableStock,
             Supplier: this.supplier,
             Image: this.image

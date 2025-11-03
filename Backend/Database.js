@@ -26,7 +26,11 @@ class DatabaseManager {
      */
     async loadDatabase() {
         try {
-            const response = await fetch(this.databaseUrl);
+            // Add cache-busting parameter to ensure fresh data is always loaded
+            const timestamp = new Date().getTime();
+            const dbUrl = `Backend/Database.json?t=${timestamp}`;
+            
+            const response = await fetch(dbUrl);
             if (!response.ok) {
                 throw new Error(`Failed to load database: ${response.statusText}`);
             }
@@ -83,6 +87,7 @@ class DatabaseManager {
             data.Description,
             data.Price,
             data.Category,
+            data.Type || "Consumable",
             data.AvailableStock,
             data.Supplier,
             data.Image || ""
@@ -165,19 +170,22 @@ class DatabaseManager {
 
     /**
      * Initialize the system with data
+     * Prioritizes localStorage (user changes) over Database.json (default data)
      * @returns {Promise<Object>} Initialization result
      */
     async initialize() {
         try {
-            // Try to load from local storage first (for persistence during session)
-            const savedData = this.loadFromLocalStorage('store_database');
-            if (savedData) {
-                this.data = savedData;
-                console.log("Loaded data from local storage");
+            // FIRST: Check if user has modified data in localStorage
+            // If localStorage has data, it means user has made changes (add/edit/delete)
+            const cachedData = this.loadFromLocalStorage('store_database');
+            if (cachedData) {
+                this.data = cachedData;
+                console.log("Loaded from localStorage (user changes) - Total products:", this.data.Product.length);
             } else {
-                // Otherwise load from Database.json
+                // SECOND: Load fresh from Database.json only if no cached changes
                 await this.loadDatabase();
                 this.saveToLocalStorage('store_database', this.data);
+                console.log("Loaded fresh from Database.json - Total products:", this.data.Product.length);
             }
 
             const products = this.convertToProductObjects(this.data.Product || []);

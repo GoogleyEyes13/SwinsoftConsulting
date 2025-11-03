@@ -82,6 +82,13 @@ class ItemManager {
             errors.push("Product category must not exceed 50 characters");
         }
 
+        // Validate type
+        if (!productData.type || productData.type.trim() === "") {
+            errors.push("Product type is required");
+        } else if (productData.type.length > 50) {
+            errors.push("Product type must not exceed 50 characters");
+        }
+
         // Validate stock
         if (productData.availableStock === undefined || productData.availableStock === null) {
             errors.push("Available stock is required");
@@ -147,6 +154,7 @@ class ItemManager {
                 productData.description.trim(),
                 parseFloat(productData.price),
                 productData.category.trim(),
+                productData.type.trim(),
                 parseInt(productData.availableStock),
                 productData.supplier.trim(),
                 productData.image ? productData.image.trim() : ""
@@ -154,6 +162,8 @@ class ItemManager {
 
             // Add to inventory
             if (this.inventoryManager.addProduct(newProduct)) {
+                // PERSIST TO LOCALSTORAGE after adding
+                dbManager.saveProducts(this.inventoryManager.getAllProducts());
                 return {
                     success: true,
                     message: `Product "${newProduct.name}" created successfully with ID ${newProductID}`,
@@ -194,6 +204,7 @@ class ItemManager {
             description: updateData.description !== undefined ? updateData.description : product.description,
             price: updateData.price !== undefined ? updateData.price : product.price,
             category: updateData.category !== undefined ? updateData.category : product.category,
+            type: updateData.type !== undefined ? updateData.type : product.type,
             availableStock: updateData.availableStock !== undefined ? updateData.availableStock : product.availableStock,
             supplier: updateData.supplier !== undefined ? updateData.supplier : product.supplier,
             image: updateData.image !== undefined ? updateData.image : product.image
@@ -216,6 +227,7 @@ class ItemManager {
             if (updateData.description !== undefined) updates.description = updateData.description.trim();
             if (updateData.price !== undefined) updates.price = parseFloat(updateData.price);
             if (updateData.category !== undefined) updates.category = updateData.category.trim();
+            if (updateData.type !== undefined) updates.type = updateData.type.trim();
             if (updateData.supplier !== undefined) updates.supplier = updateData.supplier.trim();
             if (updateData.image !== undefined) updates.image = updateData.image.trim();
 
@@ -228,6 +240,8 @@ class ItemManager {
                     this.inventoryManager.adjustStock(productID, difference);
                 }
 
+                // PERSIST TO LOCALSTORAGE after updating
+                dbManager.saveProducts(this.inventoryManager.getAllProducts());
                 return {
                     success: true,
                     message: `Product "${product.name}" updated successfully`
@@ -264,6 +278,8 @@ class ItemManager {
 
         try {
             if (this.inventoryManager.removeProduct(productID)) {
+                // PERSIST TO LOCALSTORAGE after deleting
+                dbManager.saveProducts(this.inventoryManager.getAllProducts());
                 return {
                     success: true,
                     message: `Product "${productName}" deleted successfully`
@@ -297,6 +313,7 @@ class ItemManager {
             description: product.description,
             price: product.price,
             category: product.category,
+            type: product.type,
             availableStock: product.availableStock,
             supplier: product.supplier,
             image: product.image
@@ -317,6 +334,14 @@ class ItemManager {
      */
     getAllCategories() {
         return this.inventoryManager.getAllCategories();
+    }
+
+    /**
+     * Get all product types for dropdown selection
+     * @returns {Array} Array of product type names
+     */
+    getAllTypes() {
+        return this.inventoryManager.getAllTypes();
     }
 
     /**

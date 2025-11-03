@@ -129,6 +129,20 @@ class InventoryManager {
     }
 
     /**
+     * Get all available product types
+     * @returns {Array} Array of unique product types
+     */
+    getAllTypes() {
+        const types = new Set();
+        this.products.forEach(product => {
+            if (product.type) {
+                types.add(product.type);
+            }
+        });
+        return Array.from(types);
+    }
+
+    /**
      * Get products in stock (stock > 0)
      * @returns {Array} Array of Product objects with available stock
      */
@@ -181,6 +195,7 @@ class InventoryManager {
         if (updates.description !== undefined) product.description = updates.description;
         if (updates.price !== undefined) product.price = updates.price;
         if (updates.category !== undefined) product.category = updates.category;
+        if (updates.type !== undefined) product.type = updates.type;
         if (updates.supplier !== undefined) product.supplier = updates.supplier;
         if (updates.image !== undefined) product.image = updates.image;
         // Note: availableStock should be updated through reserveStock/returnStock/adjustStock
