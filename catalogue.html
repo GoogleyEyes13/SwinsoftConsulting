@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Catalogue - Swinsoft Consulting</title>
+    <link href="Style.css" rel="stylesheet"/>
+    <link href="Framework/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        /* Catalogue specific styles */
+        .catalogue-container {
+            padding: 20px;
+        }
+
+        .filters-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            margin-bottom: 15px;
+        }
+
+        .filter-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-box {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .product-description {
+            font-size: 14px;
+            color: #666;
+            margin: 8px 0;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-category {
+            display: inline-block;
+            background-color: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            margin: 10px 0;
+        }
+
+        .product-stock {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+
+        .stock-in {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .stock-out {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .product-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-add-cart {
+            flex: 1;
+            padding: 8px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-add-cart:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+
+        .btn-add-cart:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .catalogue-stats {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .sort-controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-controls label {
+            font-weight: bold;
+        }
+
+        .sort-controls select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .breadcrumb-nav {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .breadcrumb-nav a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        .breadcrumb-nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="Font">
+    <!-- Header -->
+    <div class="Curve">
+        <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+            <path d="M-50,0 L500,0 L500,60 L-50,60 Z" class="wave-back"></path>
+            <path d="M500,0 C350,150 150,-100 0,50 L0,0 L500,0 Z" class="wave-middle"></path>
+            <path d="M0,0 C150,150 350,-100 500,50 L500,0 L0,0 Z" class="wave-front"></path>
+        </svg>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 55px;">
+        <strong><h1>Store Catalogue</h1></strong>
+        <div>
+            <a href="Index.html" style="color: #007bff; text-decoration: none; margin-right: 15px;">Back to Home</a>
+            <button type="button" class="btn btn-primary">Shopping Cart</button>
+        </div>
+    </div>
+
+    <div class="container-fluid catalogue-container">
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb-nav">
+            <a href="Index.html">Home</a> / <span>Store Catalogue</span>
+        </div>
+
+        <!-- Catalogue Statistics -->
+        <div class="catalogue-stats" id="catalogueStats">
+            <span id="statText">Loading catalogue information...</span>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="filters-section">
+                    <h5>Filter & Search</h5>
+
+                    <!-- Search Bar -->
+                    <div class="filter-group">
+                        <label for="searchKeyword">Search Products:</label>
+                        <input type="text" id="searchKeyword" class="search-box" placeholder="Enter product name...">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <label for="categoryFilter">Category:</label>
+                        <select id="categoryFilter">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range Filter -->
+                    <div class="filter-group">
+                        <label for="minPrice">Min Price ($):</label>
+                        <input type="number" id="minPrice" min="0" value="0" step="0.01">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="maxPrice">Max Price ($):</label>
+                        <input type="number" id="maxPrice" min="0" value="1000" step="0.01">
+                    </div>
+
+                    <!-- Availability Filter -->
+                    <div class="filter-group">
+                        <label>
+                            <input type="checkbox" id="inStockOnly"> Show In Stock Only
+                        </label>
+                    </div>
+
+                    <!-- Filter Buttons -->
+                    <div style="margin-top: 15px;">
+                        <button type="button" class="btn btn-primary" id="applyFilters" style="width: 100%;">Apply Filters</button>
+                        <button type="button" class="btn btn-secondary" id="clearFilters" style="width: 100%; margin-top: 8px;">Clear Filters</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Section -->
+            <div class="col-md-9">
+                <!-- Sort Controls -->
+                <div class="sort-controls">
+                    <label for="sortBy">Sort by:</label>
+                    <select id="sortBy">
+                        <option value="name-asc">Product Name (A-Z)</option>
+                        <option value="name-desc">Product Name (Z-A)</option>
+                        <option value="price-asc">Price (Low to High)</option>
+                        <option value="price-desc">Price (High to Low)</option>
+                        <option value="stock-desc">Stock Availability</option>
+                    </select>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="products-grid" id="productsContainer">
+                    <div class="no-results">Loading products...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="Backend/Product.js"></script>
+    <script src="Backend/InventoryManager.js"></script>
+    <script src="Backend/StoreCatalogue.js"></script>
+    <script src="Backend/Database.js"></script>
+
+    <script>
+        /**
+         * Catalogue UI Script
+         * Handles catalogue display, filtering, and user interactions
+         */
+
+        let catalogue = null;
+        let inventoryManager = null;
+        let currentProducts = [];
+
+        /**
+         * Initialize the catalogue page
+         */
+        async function initializeCatalogue() {
+            try {
+                // Load database
+                const initResult = await dbManager.initialize();
+                
+                if (!initResult.success) {
+                    showError("Failed to load catalogue: " + initResult.message);
+                    return;
+                }
+
+                // Create managers
+                inventoryManager = new InventoryManager(initResult.products);
+                catalogue = new StoreCatalogue(inventoryManager);
+
+                // Populate categories dropdown
+                populateCategoryFilter();
+
+                // Display initial products
+                displayProducts(catalogue.getAllProducts());
+
+                // Update statistics
+                updateCatalogueStats();
+
+                // Add event listeners
+                setupEventListeners();
+
+                console.log("Catalogue initialized successfully");
+            } catch (error) {
+                console.error("Error initializing catalogue:", error);
+                showError("Error loading catalogue: " + error.message);
+            }
+        }
+
+        /**
+         * Populate category filter dropdown
+         */
+        function populateCategoryFilter() {
+            const categorySelect = document.getElementById("categoryFilter");
+            const categories = catalogue.getCategories();
+
+            // Clear existing options except the default one
+            while (categorySelect.options.length > 1) {
+                categorySelect.remove(1);
+            }
+
+            // Add categories
+            categories.forEach(category => {
+                const option = document.createElement("option");
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+        }
+
+        /**
+         * Display products in grid
+         * @param {Array} products - Products to display
+         */
+        function displayProducts(products) {
+            const container = document.getElementById("productsContainer");
+            currentProducts = products;
+
+            if (products.length === 0) {
+                container.innerHTML = '<div class="no-results">No products found matching your criteria.</div>';
+                return;
+            }
+
+            container.innerHTML = "";
+
+            products.forEach(product => {
+                const productCard = createProductCard(product);
+                container.appendChild(productCard);
+            });
+        }
+
+        /**
+         * Create a product card element
+         * @param {Product} product - Product object
+         * @returns {HTMLElement} Product card element
+         */
+        function createProductCard(product) {
+            const card = document.createElement("div");
+            card.className = "product-card";
+
+            const stockClass = product.isInStock() ? "stock-in" : "stock-out";
+            const stockText = product.isInStock() ? `In Stock (${product.availableStock})` : "Out of Stock";
+            const isDisabled = !product.isInStock();
+
+            card.innerHTML = `
+                <div class="product-category">${product.category}</div>
+                <div class="product-name">${product.name}</div>
+                <div class="product-description">${product.description}</div>
+                <div class="product-price">$${product.price.toFixed(2)}</div>
+                <div class="product-stock ${stockClass}">${stockText}</div>
+                <small style="color: #999;">Supplier: ${product.supplier}</small>
+                <div class="product-actions">
+                    <button class="btn-add-cart" ${isDisabled ? "disabled" : ""} 
+                            onclick="addToCart(${product.productID}, '${product.name}')">
+                        ${isDisabled ? "Out of Stock" : "Add to Cart"}
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        /**
+         * Apply filters
+         */
+        function applyFilters() {
+            const keyword = document.getElementById("searchKeyword").value;
+            const category = document.getElementById("categoryFilter").value;
+            const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
+            const maxPrice = parseFloat(document.getElementById("maxPrice").value) || Infinity;
+            const inStockOnly = document.getElementById("inStockOnly").checked;
+
+            const filterCriteria = {
+                keyword: keyword,
+                category: category,
+                minPrice: minPrice,
+                maxPrice: maxPrice,
+                inStockOnly: inStockOnly
+            };
+
+            let filtered = catalogue.applyFilters(filterCriteria);
+
+            // Apply sorting
+            const sortBy = document.getElementById("sortBy").value;
+            const [sortField, sortOrder] = sortBy.split("-");
+            filtered = catalogue.sortProducts(filtered, sortField, sortOrder);
+
+            displayProducts(filtered);
+            console.log(`Filters applied: ${filtered.length} products found`);
+        }
+
+        /**
+         * Clear all filters
+         */
+        function clearFilters() {
+            document.getElementById("searchKeyword").value = "";
+            document.getElementById("categoryFilter").value = "";
+            document.getElementById("minPrice").value = "0";
+            document.getElementById("maxPrice").value = "1000";
+            document.getElementById("inStockOnly").checked = false;
+            document.getElementById("sortBy").value = "name-asc";
+
+            displayProducts(catalogue.getAllProducts());
+            console.log("Filters cleared");
+        }
+
+        /**
+         * Update catalogue statistics display
+         */
+        function updateCatalogueStats() {
+            const stats = catalogue.getCatalogueStats();
+            const statText = `
+                Total Products: ${stats.totalProducts} | 
+                In Stock: ${stats.inStockProducts} | 
+                Average Price: $${stats.averagePrice} | 
+                Price Range: $${stats.priceRange.min} - $${stats.priceRange.max}
+            `;
+            document.getElementById("statText").textContent = statText;
+        }
+
+        /**
+         * Add product to shopping cart
+         * @param {number} productID - Product ID
+         * @param {string} productName - Product name
+         */
+        function addToCart(productID, productName) {
+            // Get current cart from localStorage
+            let cart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
+
+            // Check if product already in cart
+            const existingItem = cart.find(item => item.productID === productID);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    productID: productID,
+                    name: productName,
+                    quantity: 1
+                });
+            }
+
+            // Save cart to localStorage
+            localStorage.setItem("shoppingCart", JSON.stringify(cart));
+
+            // Show confirmation
+            alert(`"${productName}" added to cart!`);
+            console.log("Product added to cart:", productName);
+        }
+
+        /**
+         * Setup event listeners
+         */
+        function setupEventListeners() {
+            document.getElementById("applyFilters").addEventListener("click", applyFilters);
+            document.getElementById("clearFilters").addEventListener("click", clearFilters);
+            document.getElementById("sortBy").addEventListener("change", applyFilters);
+            document.getElementById("searchKeyword").addEventListener("keyup", (e) => {
+                if (e.key === "Enter") applyFilters();
+            });
+        }
+
+        /**
+         * Show error message
+         * @param {string} message - Error message
+         */
+        function showError(message) {
+            const container = document.getElementById("productsContainer");
+            container.innerHTML = `<div class="no-results" style="color: red;">${message}</div>`;
+        }
+
+        // Initialize when page loads
+        document.addEventListener("DOMContentLoaded", initializeCatalogue);
+    </script>
+</body>
+</html>
