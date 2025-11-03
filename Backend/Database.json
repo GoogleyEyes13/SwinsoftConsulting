@@ -1,0 +1,35 @@
+{
+    "Product": [
+        {
+            "Name": "Item1",
+            "Description": "Description1",
+            "Price": "Price1",
+            "AvailableStock": "Stock1",
+            "Supplier": "Supplier1",
+            "Image": "Image1"
+        },
+        {
+            "Name": "Item2",
+            "Description": "Description2",
+            "Price": "Price2",
+            "AvailableStock": "Stock2",
+            "Supplier": "Supplier2",
+            "Image": "Image2"
+        }
+    ],
+
+    "CustomerAccounts": [
+        {
+            "Username": "Usernaem1",
+            "Email": "Email1",
+            "Password": "Password1"
+        }
+    ],
+
+    "AdminAccounts": [
+        {
+            "Username": "Admin1",
+            "Password": "Admin1"
+        }
+    ]
+}

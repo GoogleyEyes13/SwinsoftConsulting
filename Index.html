@@ -1,102 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Swinsoft Consulting</title>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link href="Style.css" rel="stylesheet"/>
+    <head>
+        <title>Swinsoft Consulting</title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href="Style.css" rel="stylesheet"/>
 
-    <!-- Bootstrap CSS -->
-    <link href="Framework/css/bootstrap.min.css" rel="stylesheet" />
-</head>
+        <!-- Bootstrap CSS -->
+        <link href="Framework/css/bootstrap.min.css" rel="stylesheet" />
+    </head>
 
-<body class="Font">
-    <!-- Header waves -->
-    <div class="Curve">
-        <svg viewBox="0 0 500 150" preserveAspectRatio="none">
-            <!-- Third wave [Furthest back] -->
-            <path d="M-50,0 L500,0 L500,60 L-50,60 Z" class="wave-back"></path>
-            <!-- Second wave -->
-            <path d="M500,0 C350,150 150,-100 0,50 L0,0 L500,0 Z" class="wave-middle"></path>
-            <!-- First wave [Furthest forward]-->
-            <path d="M0,0 C150,150 350,-100 500,50 L500,0 L0,0 Z" class="wave-front"></path>
-        </svg>
-    </div>
+    <body class="Font">
+        <!-- Header waves -->
+        <div class="Curve">
+            <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+                <!-- Third wave [Furthest back] -->
+                <path d="M-50,0 L500,0 L500,60 L-50,60 Z" class="wave-back"></path>
+                <!-- Second wave -->
+                <path d="M500,0 C350,150 150,-100 0,50 L0,0 L500,0 Z" class="wave-middle"></path>
+                <!-- First wave [Furthest forward]-->
+                <path d="M0,0 C150,150 350,-100 500,50 L500,0 L0,0 Z" class="wave-front"></path>
+            </svg>
+        </div>
 
-    <button type="button" class="btn btn-primary" style="float: right;">LogIn</button>
-    <strong><h1 style="padding-left: 55px;">Swinsoft Consulting</h1></strong>
+        <button type="button" class="btn btn-primary" style="float: right;">LogIn</button>
+        <strong><h1 style="padding-left: 55px;">Swinsoft Consulting</h1></strong>
 
-    <div class="container-fluid text-center" style="padding-top: 30px">
-        <!-- Filtering, search bar and shopping cart -->
-        <div class="row">
-            <div class="col-sm-12 col-md-4 col-lg-4 text-md-start text-center">
-                <strong><p style="font-size: 25px;">Filters</p></strong>
+        <div class="container-fluid text-center" style="padding-top: 30px">
+            <!-- Filtering, search bar and shopping cart -->
+            <div class="row">
+                <div class="col-sm-12 col-md-4 col-lg-4 text-md-start text-center">
+                    <strong><p style="font-size: 25px;">Filters</p></strong>
 
-                <div class="row">
-                    <div class="col-6">
-                    <label for="ItemType">Item type:</label>
+                    <div class="row">
+                        <div class="col-6">
+                        <label for="ItemType">Item type:</label>
+                        </div>
+                        <div class="col-6">
+                        <select name="ItemType" id="ItemType">
+                            <option value="Eg1">Eg1</option>
+                            <option value="Eg2">Eg2</option>
+                        </select>
+                        </div>
                     </div>
-                    <div class="col-6">
-                    <select name="ItemType" id="ItemType">
-                        <option value="Eg1">Eg1</option>
-                        <option value="Eg2">Eg2</option>
-                    </select>
+
+                    <div class="row">
+                        <div class="col-6">
+                        <label for="Category">Category:</label>
+                        </div>
+                        <div class="col-6">
+                        <select name="Category" id="Category">
+                            <option value="Eg1">Eg1</option>
+                            <option value="Eg2">Eg2</option>
+                        </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                        <label for="Price">Price:</label>
+                        </div>
+                        <div class="col-6">
+                        <select name="Price" id="Price">
+                            <option value="Eg1">Eg1</option>
+                            <option value="Eg2">Eg2</option>
+                        </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                        <label for="Availability">Availability:</label>
+                        </div>
+                        <div class="col-6">
+                        <select name="Availability" id="Availability">
+                            <option value="Eg1">Eg1</option>
+                            <option value="Eg2">Eg2</option>
+                        </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-6">
-                    <label for="Category">Category:</label>
-                    </div>
-                    <div class="col-6">
-                    <select name="Category" id="Category">
-                        <option value="Eg1">Eg1</option>
-                        <option value="Eg2">Eg2</option>
-                    </select>
-                    </div>
+                <div class="col-sm-12 col-md-4 col-lg-4 text-center">
+                    <strong><p style="font-size: 25px;">Search for items</p></strong>
+                    <input type="text" placeholder="Search..">
                 </div>
 
-                <div class="row">
-                    <div class="col-6">
-                    <label for="Price">Price:</label>
-                    </div>
-                    <div class="col-6">
-                    <select name="Price" id="Price">
-                        <option value="Eg1">Eg1</option>
-                        <option value="Eg2">Eg2</option>
-                    </select>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6">
-                    <label for="Availability">Availability:</label>
-                    </div>
-                    <div class="col-6">
-                    <select name="Availability" id="Availability">
-                        <option value="Eg1">Eg1</option>
-                        <option value="Eg2">Eg2</option>
-                    </select>
-                    </div>
+                <div class="col-sm-12 col-md-4 col-lg-4 text-md-end text-center">
+                    <button type="button" class="btn btn-primary">Shopping Cart</button>
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-4 col-lg-4 text-center">
-                <strong><p style="font-size: 25px;">Search for items</p></strong>
-                <input type="text" placeholder="Search..">
-            </div>
+            <!-- Store Catalogue -->
+            <div class="row">
+                <div class="col-12 text-center">
+                    <br>
+                    <hr><h2><strong>Store Catalogue</strong></h2><hr>
 
-            <div class="col-sm-12 col-md-4 col-lg-4 text-md-end text-center">
-                <button type="button" class="btn btn-primary">Shopping Cart</button>
+                    <!-- Where the products are listed-->
+                    <ul id="ProductList"></ul>
+                </div>
             </div>
         </div>
 
-        <!-- Store Catalogue -->
-        <div class="row">
-            <div class="col-12 text-center">
-                <br>
-                <hr><h2><strong>Store Catalogue</strong></h2><hr>
-            </div>
-        </div>
-    </div>
-</body>
+        <!-- JS files -->
+        <script src="Backend/StoreCatalogue.js"></script>
+    </body>
+</html>
