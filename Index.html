@@ -163,9 +163,12 @@
         <strong><h1 style="padding-left: 55px;">Swinsoft Consulting</h1></strong>
 
         <!-- THANG'S IMPLEMENTATION: Navigation Links for Item Management -->
-        <div style="padding: 10px 55px; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; margin-bottom: 20px;">
-            <a href="item-management.html" style="color: #dc3545; text-decoration: none; margin-right: 20px; font-weight: bold;">Manage Items (Admin)</a>
-            <span style="color: #666; margin-left: 20px; border-left: 1px solid #ddd; padding-left: 20px;">New features: Manage inventory which will be used for admin accounts</span>
+        <div style="padding: 10px 55px; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <a href="item-management.html" style="color: #dc3545; text-decoration: none; margin-right: 20px; font-weight: bold;">Manage Items (Admin)</a>
+                <span style="color: #666; margin-left: 20px; border-left: 1px solid #ddd; padding-left: 20px;">New features: Manage inventory which will be used for admin accounts</span>
+            </div>
+            <button id="resetButtonIndex" style="padding: 8px 15px; background-color: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; white-space: nowrap;">Reset to Database</button>
         </div>
 
         <div class="container-fluid text-center" style="padding-top: 30px">
@@ -263,37 +266,64 @@
             let globalCatalogue = null;
             let globalAllProducts = [];
 
-            // Initialize catalogue - fetch directly from Database.json for reliable image loading
+            // Initialize catalogue with data from localStorage or Database.json
             document.addEventListener('DOMContentLoaded', () => {
                 const ProductList = document.getElementById('productsContainer');
 
-                // Add cache-busting parameter to ensure fresh data is loaded
-                // This ensures that any changes made in the admin panel are reflected
-                const timestamp = new Date().getTime();
-                const dbUrl = `Backend/Database.json?t=${timestamp}`;
+                // Load products with proper synchronization
+                loadProductsWithSync();
 
-                // Fetching each element in the Product section of the database
-                // Then displaying it
-                fetch(dbUrl)
-                    .then((res) => res.json())
-                    .then((data) => {
-                        globalAllProducts = data.Product;
-                        
-                        // Populate filters with real data
-                        populateCategoryFilter();
-                        populateTypeFilter();
-                        populatePriceFilter();
-                        
-                        // Display all products initially
-                        displayProducts(globalAllProducts);
-                        
-                        // Setup filter event listeners
-                        setupFilterListeners();
-                    })
-                    .catch((err) => {
-                        console.error("Error loading JSON:", err);
-                        ProductList.innerHTML = `<div class="no-results" style="color:red">Error loading products: ${err.message}</div>`;
-                    });
+                function loadProductsWithSync() {
+                    // PRIORITY 1: Check localStorage for admin changes (from item-management.html)
+                    const cachedData = localStorage.getItem('store_database');
+                    
+                    if (cachedData) {
+                        try {
+                            const data = JSON.parse(cachedData);
+                            if (data.Product && data.Product.length > 0) {
+                                console.log("Loaded products from localStorage (admin changes) - Total:", data.Product.length);
+                                globalAllProducts = data.Product;
+                                
+                                // Populate filters and display
+                                populateCategoryFilter();
+                                populateTypeFilter();
+                                populatePriceFilter();
+                                displayProducts(globalAllProducts);
+                                setupFilterListeners();
+                                return;
+                            }
+                        } catch (err) {
+                            console.warn("Error parsing localStorage data, falling back to Database.json:", err);
+                        }
+                    }
+
+                    // PRIORITY 2: Fall back to Database.json with cache-busting
+                    const timestamp = new Date().getTime();
+                    const dbUrl = `Backend/Database.json?t=${timestamp}`;
+
+                    fetch(dbUrl)
+                        .then((res) => res.json())
+                        .then((data) => {
+                            globalAllProducts = data.Product;
+                            
+                            // Populate filters with real data
+                            populateCategoryFilter();
+                            populateTypeFilter();
+                            populatePriceFilter();
+                            
+                            // Display all products initially
+                            displayProducts(globalAllProducts);
+                            
+                            // Setup filter event listeners
+                            setupFilterListeners();
+                            
+                            console.log("Loaded products from Database.json - Total:", globalAllProducts.length);
+                        })
+                        .catch((err) => {
+                            console.error("Error loading products:", err);
+                            ProductList.innerHTML = `<div class="no-results" style="color:red">Error loading products: ${err.message}</div>`;
+                        });
+                }
             });
 
             /**
@@ -497,6 +527,98 @@
                         localStorage.setItem('shoppingCart', JSON.stringify(cart));
                         alert(`"${name}" added to cart`);
                     });
+                });
+            }
+
+            // Auto-refresh products when page becomes visible (user returns from item-management.html)
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    console.log("Page became visible - checking for updated products");
+                    const cachedData = localStorage.getItem('store_database');
+                    if (cachedData) {
+                        try {
+                            const data = JSON.parse(cachedData);
+                            if (data.Product && data.Product.length > 0) {
+                                // Check if data has changed
+                                if (JSON.stringify(data.Product) !== JSON.stringify(globalAllProducts)) {
+                                    console.log("Products updated in item-management, refreshing view");
+                                    globalAllProducts = data.Product;
+                                    
+                                    // Refresh filters and display
+                                    populateCategoryFilter();
+                                    populateTypeFilter();
+                                    populatePriceFilter();
+                                    applyFilters();
+                                }
+                            }
+                        } catch (err) {
+                            console.warn("Error checking for updates:", err);
+                        }
+                    }
+                }
+            });
+
+            /**
+             * Reset localStorage and reload data from Database.json
+             */
+            window.resetToDatabase = async function() {
+                // Double confirmation dialog
+                const confirmed = confirm("⚠️ WARNING: This will delete all your changes in localStorage and restore original data from Database.json.\n\nAre you sure you want to continue?");
+                
+                if (!confirmed) {
+                    alert("Reset cancelled");
+                    return;
+                }
+
+                const doubleConfirmed = confirm("This action cannot be undone. Click OK to confirm:");
+                
+                if (!doubleConfirmed) {
+                    alert("Reset cancelled");
+                    return;
+                }
+
+                try {
+                    // Clear localStorage
+                    localStorage.removeItem('store_database');
+                    
+                    // Re-fetch from Database.json
+                    const timestamp = new Date().getTime();
+                    const dbUrl = `Backend/Database.json?t=${timestamp}`;
+                    
+                    const response = await fetch(dbUrl);
+                    const data = await response.json();
+                    
+                    // Update global products
+                    globalAllProducts = data.Product;
+                    
+                    // Refresh the display
+                    populateCategoryFilter();
+                    populateTypeFilter();
+                    populatePriceFilter();
+                    displayProducts(globalAllProducts);
+                    
+                    alert("Data reset successfully!");
+                    
+                } catch (error) {
+                    console.error("Error during reset:", error);
+                    alert("Error during reset. Please try again.");
+                }
+            };
+
+            /**
+             * Setup reset button listener for index.html
+             */
+            const resetBtnIndex = document.getElementById("resetButtonIndex");
+            if (resetBtnIndex) {
+                resetBtnIndex.addEventListener("click", window.resetToDatabase);
+                
+                // Add hover effect
+                resetBtnIndex.addEventListener("mouseover", function() {
+                    this.style.backgroundColor = "#e55039";
+                });
+                
+                resetBtnIndex.addEventListener("mouseout", function() {
+                    this.style.backgroundColor = "#ff6b6b";
                 });
             }
         </script>

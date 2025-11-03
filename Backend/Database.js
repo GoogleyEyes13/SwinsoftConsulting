@@ -98,13 +98,32 @@ class DatabaseManager {
      * Save products back to database
      * NOTE: This simulates saving by updating the in-memory data.
      * In a real scenario, you would need a backend API to persist changes.
-     * @param {Array} products - Array of Product objects
+     * @param {Array} products - Array of Product objects or raw product data
      * @returns {Object} Save result {success: boolean, message: string}
      */
     async saveProducts(products) {
         try {
             // Convert products to JSON format
-            this.data.Product = products.map(product => product.toJSON());
+            // Handle both Product objects (with toJSON method) and raw objects
+            this.data.Product = products.map(product => {
+                if (typeof product.toJSON === 'function') {
+                    return product.toJSON();
+                } else if (product.ProductID !== undefined) {
+                    // Already a raw object, ensure all required fields exist
+                    return {
+                        ProductID: product.ProductID,
+                        Name: product.Name || product.name,
+                        Description: product.Description || product.description,
+                        Price: product.Price || product.price,
+                        Category: product.Category || product.category,
+                        Type: product.Type || product.type || 'Consumable',
+                        AvailableStock: product.AvailableStock || product.availableStock,
+                        Supplier: product.Supplier || product.supplier,
+                        Image: product.Image || product.image || ''
+                    };
+                }
+                return product;
+            });
             
             // In a real application, this would send data to a server
             // For now, we'll store in localStorage as a demonstration
@@ -169,6 +188,20 @@ class DatabaseManager {
     }
 
     /**
+     * Validate product data integrity
+     * @param {Object} product - Product object to validate
+     * @returns {boolean} True if product data is valid
+     */
+    isValidProduct(product) {
+        return product &&
+            product.ProductID !== undefined &&
+            product.Name &&
+            product.Price !== undefined &&
+            typeof product.AvailableStock === 'number' &&
+            product.Supplier;
+    }
+
+    /**
      * Initialize the system with data
      * Prioritizes localStorage (user changes) over Database.json (default data)
      * @returns {Promise<Object>} Initialization result
@@ -178,9 +211,19 @@ class DatabaseManager {
             // FIRST: Check if user has modified data in localStorage
             // If localStorage has data, it means user has made changes (add/edit/delete)
             const cachedData = this.loadFromLocalStorage('store_database');
-            if (cachedData) {
-                this.data = cachedData;
-                console.log("Loaded from localStorage (user changes) - Total products:", this.data.Product.length);
+            if (cachedData && cachedData.Product && cachedData.Product.length > 0) {
+                // Validate the cached data
+                const allValid = cachedData.Product.every(p => this.isValidProduct(p));
+                if (allValid) {
+                    this.data = cachedData;
+                    console.log("Loaded from localStorage (user changes) - Total products:", this.data.Product.length);
+                } else {
+                    // Corrupted data detected, clear and reload from Database.json
+                    console.warn("Corrupted data detected in localStorage, reloading from Database.json");
+                    localStorage.removeItem('store_database');
+                    await this.loadDatabase();
+                    this.saveToLocalStorage('store_database', this.data);
+                }
             } else {
                 // SECOND: Load fresh from Database.json only if no cached changes
                 await this.loadDatabase();

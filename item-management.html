@@ -291,7 +291,10 @@
 
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px 55px;">
         <strong><h1>Store Item Management</h1></strong>
-        <a href="Index.html" style="color: #007bff; text-decoration: none;">Back to Home</a>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <button id="resetButton" style="padding: 10px 15px; background-color: #ff6b6b; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px;">Reset to Database</button>
+            <a href="Index.html" style="color: #007bff; text-decoration: none;">Back to Home</a>
+        </div>
     </div>
 
     <div class="container-fluid management-container">
@@ -330,6 +333,23 @@
                         </div>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productType">Product Type *</label>
+                            <select id="productType" required>
+                                <option value="">Select a type...</option>
+                                <option value="Consumable">Consumable</option>
+                                <option value="Perishable">Perishable</option>
+                            </select>
+                            <div class="form-validation-error" id="error-productType"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="productSupplier">Supplier Name *</label>
+                            <input type="text" id="productSupplier" required placeholder="Enter supplier name">
+                            <div class="form-validation-error" id="error-productSupplier"></div>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="productDescription">Description *</label>
                         <textarea id="productDescription" required placeholder="Enter detailed product description"></textarea>
@@ -349,16 +369,9 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="productSupplier">Supplier Name *</label>
-                            <input type="text" id="productSupplier" required placeholder="Enter supplier name">
-                            <div class="form-validation-error" id="error-productSupplier"></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="productImage">Image Filename</label>
-                            <input type="text" id="productImage" placeholder="e.g., product.jpg">
-                        </div>
+                    <div class="form-group">
+                        <label for="productImage">Image Filename</label>
+                        <input type="text" id="productImage" placeholder="e.g., product.jpg">
                     </div>
 
                     <div class="form-actions">
@@ -456,6 +469,15 @@
                     <div class="form-group">
                         <label for="editProductCategory">Category *</label>
                         <select id="editProductCategory" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProductType">Product Type *</label>
+                        <select id="editProductType" required>
+                            <option value="">Select a type...</option>
+                            <option value="Consumable">Consumable</option>
+                            <option value="Perishable">Perishable</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -580,21 +602,29 @@
 
             tbody.innerHTML = "";
             allProducts.forEach(product => {
+                // Validate product data
+                const productID = product.productID || 'N/A';
+                const name = product.name || 'Unknown';
+                const category = product.category || 'N/A';
+                const price = product.price ? parseFloat(product.price).toFixed(2) : '0.00';
+                const stock = product.availableStock !== undefined ? parseInt(product.availableStock) : 0;
+                const supplier = product.supplier || 'Unknown';
+                
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                    <td>${product.productID}</td>
-                    <td><strong>${product.name}</strong></td>
-                    <td>${product.category}</td>
-                    <td>$${product.price.toFixed(2)}</td>
+                    <td>${productID}</td>
+                    <td><strong>${name}</strong></td>
+                    <td>${category}</td>
+                    <td>$${price}</td>
                     <td>
-                        <span style="color: ${product.availableStock <= 10 ? '#dc3545' : '#28a745'}; font-weight: bold;">
-                            ${product.availableStock}
+                        <span style="color: ${stock <= 10 ? '#dc3545' : '#28a745'}; font-weight: bold;">
+                            ${stock}
                         </span>
                     </td>
-                    <td>${product.supplier}</td>
+                    <td>${supplier}</td>
                     <td>
-                        <button class="btn-edit-action" onclick="openEditModal(${product.productID})">Edit</button>
-                        <button class="btn-delete-action" onclick="deleteProduct(${product.productID}, '${product.name}')">Delete</button>
+                        <button class="btn-edit-action" onclick="openEditModal(${productID})">Edit</button>
+                        <button class="btn-delete-action" onclick="deleteProduct(${productID}, '${name}')">Delete</button>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -707,6 +737,7 @@
                     description: document.getElementById("productDescription").value,
                     price: document.getElementById("productPrice").value,
                     category: document.getElementById("productCategory").value,
+                    type: document.getElementById("productType").value,
                     availableStock: document.getElementById("productStock").value,
                     supplier: document.getElementById("productSupplier").value,
                     image: document.getElementById("productImage").value
@@ -721,9 +752,6 @@
                     // Refresh data
                     loadAllItems();
                     loadStockAlerts();
-                    
-                    // Save to database
-                    await saveToDatabase();
                 } else {
                     showAlert(result.message || "Failed to add product", "error");
                 }
@@ -737,6 +765,7 @@
                     description: document.getElementById("editProductDescription").value,
                     price: document.getElementById("editProductPrice").value,
                     category: document.getElementById("editProductCategory").value,
+                    type: document.getElementById("editProductType").value,
                     availableStock: document.getElementById("editProductStock").value,
                     supplier: document.getElementById("editProductSupplier").value
                 };
@@ -748,9 +777,6 @@
                     closeEditModal();
                     loadAllItems();
                     loadStockAlerts();
-                    
-                    // Save to database
-                    await saveToDatabase();
                 } else {
                     showAlert(result.message || "Failed to update product", "error");
                 }
@@ -774,6 +800,7 @@
             document.getElementById("editProductDescription").value = product.description;
             document.getElementById("editProductPrice").value = product.price;
             document.getElementById("editProductCategory").value = product.category;
+            document.getElementById("editProductType").value = product.type;
             document.getElementById("editProductStock").value = product.availableStock;
             document.getElementById("editProductSupplier").value = product.supplier;
 
@@ -804,9 +831,6 @@
                 showAlert(result.message, "success");
                 loadAllItems();
                 loadStockAlerts();
-                
-                // Save to database
-                await saveToDatabase();
             } else {
                 showAlert(result.message || "Failed to delete product", "error");
             }
@@ -840,6 +864,72 @@
             }, 5000);
         }
 
+        /**
+         * Reset localStorage and reload data from Database.json
+         */
+        async function resetToDatabase() {
+            // Double confirmation dialog
+            const confirmed = confirm("⚠️ WARNING: This will delete all your changes in localStorage and restore original data from Database.json.\n\nAre you sure you want to continue?");
+            
+            if (!confirmed) {
+                showAlert("Reset cancelled", "info");
+                return;
+            }
+
+            const doubleConfirmed = confirm("This action cannot be undone. Type OK to confirm:");
+            
+            if (!doubleConfirmed) {
+                showAlert("Reset cancelled", "info");
+                return;
+            }
+
+            try {
+                // Clear localStorage
+                localStorage.removeItem('store_database');
+                
+                // Re-fetch from Database.json
+                const timestamp = new Date().getTime();
+                const dbUrl = `Backend/Database.json?t=${timestamp}`;
+                
+                const response = await fetch(dbUrl);
+                const data = await response.json();
+                
+                // Reinitialize with fresh data
+                const dbManager = new Database();
+                dbManager.initialize(data.Product);
+                
+                // Refresh the page
+                showAlert("Data reset successfully! Reloading page...", "success");
+                
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+                
+            } catch (error) {
+                console.error("Error during reset:", error);
+                showAlert("Error during reset. Please try again.", "error");
+            }
+        }
+
+        /**
+         * Setup reset button listener
+         */
+        function setupResetButton() {
+            const resetBtn = document.getElementById("resetButton");
+            if (resetBtn) {
+                resetBtn.addEventListener("click", resetToDatabase);
+                
+                // Add hover effect
+                resetBtn.addEventListener("mouseover", function() {
+                    this.style.backgroundColor = "#e55039";
+                });
+                
+                resetBtn.addEventListener("mouseout", function() {
+                    this.style.backgroundColor = "#ff6b6b";
+                });
+            }
+        }
+
         // Close modal when clicking outside
         window.addEventListener("click", (e) => {
             const modal = document.getElementById("editModal");
@@ -849,7 +939,10 @@
         });
 
         // Initialize when page loads
-        document.addEventListener("DOMContentLoaded", initializeItemManagement);
+        document.addEventListener("DOMContentLoaded", () => {
+            initializeItemManagement();
+            setupResetButton();
+        });
     </script>
 </body>
 </html>
