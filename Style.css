@@ -40,3 +40,12 @@ h1 {
 .Curve .wave-front {
     fill: #dac6a6; 
 }
+
+/* STORE CATALOGUE DISPLAY */
+.StoreCatalogueImage {
+    width: 100%;      
+    height: 200px;  
+    object-fit: cover; 
+    border-radius: 10px;
+}
+
