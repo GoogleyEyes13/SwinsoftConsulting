@@ -143,7 +143,7 @@ Value: {
 
 ```
 1. Open Index.html
-2. Click "📦 View Store Catalogue"
+2. Click "View Store Catalogue"
 3. Browse all 6 products
 4. Filter: Select "Dairy" category → 3 products
 5. Search: Type "coffee" → 1 product
@@ -156,7 +156,7 @@ Value: {
 
 ```
 1. Open Index.html
-2. Click "⚙️ Manage Items (Admin)"
+2. Click "Manage Items (Admin)"
 3. Fill form:
    - Name: "Organic Juice 1L"
    - Category: "Health Foods"
