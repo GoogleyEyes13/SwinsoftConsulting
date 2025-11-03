@@ -8,7 +8,7 @@
             "Category": "Dairy",
             "AvailableStock": 45,
             "Supplier": "Local Dairy Farm",
-            "Image": "milk.jpg"
+            "Image": "Backend/ProductImages/milk.png"
         },
         {
             "ProductID": 2,
@@ -18,7 +18,7 @@
             "Category": "Bakery",
             "AvailableStock": 20,
             "Supplier": "Local Bakery",
-            "Image": "bread.jpg"
+            "Image": "Backend/ProductImages/bread.png"
         },
         {
             "ProductID": 3,
@@ -28,7 +28,7 @@
             "Category": "Specialty",
             "AvailableStock": 30,
             "Supplier": "Specialty Imports",
-            "Image": "coffee.jpg"
+            "Image": "Backend/ProductImages/coffee.png"
         },
         {
             "ProductID": 4,
@@ -38,7 +38,7 @@
             "Category": "Dairy",
             "AvailableStock": 35,
             "Supplier": "Local Farm",
-            "Image": "eggs.jpg"
+            "Image": "Backend/ProductImages/eggs.png"
         },
         {
             "ProductID": 5,
@@ -48,7 +48,7 @@
             "Category": "Specialty",
             "AvailableStock": 50,
             "Supplier": "Import Food Co",
-            "Image": "ramen.jpg"
+            "Image": "Backend/ProductImages/ramen.png"
         },
         {
             "ProductID": 6,
@@ -58,7 +58,7 @@
             "Category": "Health Foods",
             "AvailableStock": 25,
             "Supplier": "Health Foods Inc",
-            "Image": "almonds.jpg"
+            "Image": "Backend/ProductImages/almonds.png"
         }
     ],
 
