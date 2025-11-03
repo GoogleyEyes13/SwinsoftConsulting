@@ -162,11 +162,10 @@
         <button type="button" class="btn btn-primary" style="float: right;">LogIn</button>
         <strong><h1 style="padding-left: 55px;">Swinsoft Consulting</h1></strong>
 
-        <!-- THANG'S IMPLEMENTATION: Navigation Links for Store Catalogue and Item Management -->
+        <!-- THANG'S IMPLEMENTATION: Navigation Links for Item Management -->
         <div style="padding: 10px 55px; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; margin-bottom: 20px;">
-            <a href="catalogue.html" style="color: #007bff; text-decoration: none; margin-right: 20px; font-weight: bold;">View Store Catalogue</a>
             <a href="item-management.html" style="color: #dc3545; text-decoration: none; margin-right: 20px; font-weight: bold;">Manage Items (Admin)</a>
-            <span style="color: #666; margin-left: 20px; border-left: 1px solid #ddd; padding-left: 20px;">New features: Browse products, search & filter, and manage inventory</span>
+            <span style="color: #666; margin-left: 20px; border-left: 1px solid #ddd; padding-left: 20px;">New features: Manage inventory which will be used for admin accounts</span>
         </div>
 
         <div class="container-fluid text-center" style="padding-top: 30px">
@@ -177,11 +176,11 @@
 
                     <div class="row">
                         <div class="col-6">
-                        <label for="ItemType">Item type:</label>
+                        <label for="ItemType">Item Type:</label>
                         </div>
                         <div class="col-6">
-                        <select name="ItemType" id="ItemType" disabled style="opacity: 0.5;">
-                            <option value="">N/A</option>
+                        <select name="ItemType" id="ItemType">
+                            <option value="">All Items</option>
                         </select>
                         </div>
                     </div>
@@ -276,6 +275,7 @@
                         globalAllProducts = data.Product;
                         
                         // Populate filters with real data
+                        populateItemTypeFilter();
                         populateCategoryFilter();
                         populatePriceFilter();
                         
@@ -312,6 +312,26 @@
             }
 
             /**
+             * Populate Item Type dropdown with actual item types from data
+             */
+            function populateItemTypeFilter() {
+                const itemTypeSelect = document.getElementById('ItemType');
+                // Extract unique item types from products
+                const itemTypes = [...new Set(globalAllProducts.map(p => p.ItemType).filter(t => t))];
+
+                // Clear existing placeholder options
+                itemTypeSelect.innerHTML = '<option value="">All Items</option>';
+
+                // Add real item types
+                itemTypes.forEach(itemType => {
+                    const option = document.createElement('option');
+                    option.value = itemType;
+                    option.textContent = itemType;
+                    itemTypeSelect.appendChild(option);
+                });
+            }
+
+            /**
              * Populate Price filter with price ranges
              */
             function populatePriceFilter() {
@@ -338,7 +358,7 @@
             }
 
             /**
-             * Setup event listeners for filters and search (Thang's addition)
+             * Setup event listeners for filters and search
              */
             function setupFilterListeners() {
                 // Search input
@@ -346,6 +366,12 @@
                 if (searchInput) {
                     searchInput.addEventListener('keyup', applyFilters);
                     searchInput.addEventListener('change', applyFilters);
+                }
+
+                // Item Type filter
+                const itemTypeSelect = document.getElementById('ItemType');
+                if (itemTypeSelect) {
+                    itemTypeSelect.addEventListener('change', applyFilters);
                 }
 
                 // Category filter
@@ -372,6 +398,7 @@
              */
             function applyFilters() {
                 const searchKeyword = document.getElementById('searchKeyword')?.value || '';
+                const selectedItemType = document.getElementById('ItemType')?.value || '';
                 const selectedCategory = document.getElementById('Category')?.value || '';
                 const selectedPrice = document.getElementById('Price')?.value || '';
                 const selectedAvailability = document.getElementById('Availability')?.value || '';
@@ -385,6 +412,11 @@
                         product.Name.toLowerCase().includes(lowerKeyword) ||
                         product.Description.toLowerCase().includes(lowerKeyword)
                     );
+                }
+
+                // Filter by item type
+                if (selectedItemType) {
+                    filtered = filtered.filter(product => product.ItemType === selectedItemType);
                 }
 
                 // Filter by category
