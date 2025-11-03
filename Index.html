@@ -63,9 +63,8 @@
                         <label for="ItemType">Item type:</label>
                         </div>
                         <div class="col-6">
-                        <select name="ItemType" id="ItemType">
-                            <option value="Eg1">Eg1</option>
-                            <option value="Eg2">Eg2</option>
+                        <select name="ItemType" id="ItemType" disabled style="opacity: 0.5;">
+                            <option value="">N/A</option>
                         </select>
                         </div>
                     </div>
@@ -100,8 +99,9 @@
                         </div>
                         <div class="col-6">
                         <select name="Availability" id="Availability">
-                            <option value="Eg1">Eg1</option>
-                            <option value="Eg2">Eg2</option>
+                            <option value="">All Items</option>
+                            <option value="inStock">In Stock</option>
+                            <option value="outOfStock">Out of Stock</option>
                         </select>
                         </div>
                     </div>
@@ -109,7 +109,7 @@
 
                 <div class="col-sm-12 col-md-4 col-lg-4 text-center">
                     <strong><p style="font-size: 25px;">Search for items</p></strong>
-                    <input type="text" placeholder="Search..">
+                    <input type="text" id="searchKeyword" placeholder="Search..">
                 </div>
 
                 <div class="col-sm-12 col-md-4 col-lg-4 text-md-end text-center">
@@ -143,6 +143,10 @@
         <script src="Backend/StoreCatalogue.js"></script>
 
         <script>
+            // Global variables for filtering/searching
+            let globalCatalogue = null;
+            let globalAllProducts = [];
+
             // Lightweight catalogue initializer for the home page (uses existing backend classes)
             document.addEventListener('DOMContentLoaded', async () => {
                 try {
@@ -154,56 +158,20 @@
                     }
 
                     const inventoryManager = new InventoryManager(initResult.products);
-                    const catalogue = new StoreCatalogue(inventoryManager);
+                    globalCatalogue = new StoreCatalogue(inventoryManager);
+                    globalAllProducts = globalCatalogue.getAllProducts();
 
-                    const products = catalogue.getAllProducts();
-                    const container = document.getElementById('productsContainer');
+                    // Populate Category dropdown with real categories
+                    populateCategoryFilter();
 
-                    if (!products || products.length === 0) {
-                        container.innerHTML = '<div class="no-results">No products available.</div>';
-                        return;
-                    }
+                    // Populate Price ranges
+                    populatePriceFilter();
 
-                    container.innerHTML = '';
-                    products.forEach(product => {
-                        const card = document.createElement('div');
-                        card.className = 'product-card';
+                    // Initial render
+                    displayProducts(globalAllProducts);
 
-                        const stockClass = product.isInStock() ? 'stock-in' : 'stock-out';
-                        const stockText = product.isInStock() ? `In Stock (${product.availableStock})` : 'Out of Stock';
-                        const isDisabled = !product.isInStock();
-
-                        card.innerHTML = `
-                            <div class="product-category">${product.category}</div>
-                            <div class="product-name">${product.name}</div>
-                            <div class="product-description">${product.description}</div>
-                            <div class="product-price">$${product.price.toFixed(2)}</div>
-                            <div class="product-stock ${stockClass}">${stockText}</div>
-                            <small style="color: #999;">Supplier: ${product.supplier}</small>
-                            <div class="product-actions">
-                                <button class="btn-add-cart" ${isDisabled ? 'disabled' : ''} data-id="${product.productID}" data-name="${product.name}">
-                                    ${isDisabled ? 'Out of Stock' : 'Add to Cart'}
-                                </button>
-                            </div>
-                        `;
-
-                        container.appendChild(card);
-                    });
-
-                    // Attach add-to-cart handlers
-                    container.querySelectorAll('.btn-add-cart').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            const id = parseInt(btn.getAttribute('data-id'), 10);
-                            const name = btn.getAttribute('data-name');
-                            // simple cart in localStorage
-                            let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
-                            const existing = cart.find(item => item.productID === id);
-                            if (existing) existing.quantity += 1;
-                            else cart.push({ productID: id, name: name, quantity: 1 });
-                            localStorage.setItem('shoppingCart', JSON.stringify(cart));
-                            alert(`"${name}" added to cart`);
-                        });
-                    });
+                    // Setup filter event listeners (Thang's additions)
+                    setupFilterListeners();
 
                 } catch (err) {
                     console.error('Error initializing home catalogue:', err);
@@ -211,6 +179,175 @@
                     if (container) container.innerHTML = `<div class="no-results" style="color:red">${err.message}</div>`;
                 }
             });
+
+            /**
+             * Populate Category dropdown with actual categories from catalogue (Thang's addition)
+             */
+            function populateCategoryFilter() {
+                const categorySelect = document.getElementById('Category');
+                const categories = globalCatalogue.getCategories();
+
+                // Clear existing placeholder options
+                categorySelect.innerHTML = '<option value="">All Categories</option>';
+
+                // Add real categories
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categorySelect.appendChild(option);
+                });
+            }
+
+            /**
+             * Populate Price filter with price ranges (Thang's addition)
+             */
+            function populatePriceFilter() {
+                const priceSelect = document.getElementById('Price');
+                const { min, max } = globalCatalogue.getPriceRange();
+
+                // Define price ranges
+                const priceRanges = [
+                    { label: 'All Prices', value: '' },
+                    { label: `$0 - $${Math.ceil(max / 4)}`, value: `0-${Math.ceil(max / 4)}` },
+                    { label: `$${Math.ceil(max / 4)} - $${Math.ceil(max / 2)}`, value: `${Math.ceil(max / 4)}-${Math.ceil(max / 2)}` },
+                    { label: `$${Math.ceil(max / 2)} - $${max}`, value: `${Math.ceil(max / 2)}-${max}` }
+                ];
+
+                priceSelect.innerHTML = '';
+                priceRanges.forEach(range => {
+                    const option = document.createElement('option');
+                    option.value = range.value;
+                    option.textContent = range.label;
+                    priceSelect.appendChild(option);
+                });
+            }
+
+            /**
+             * Setup event listeners for filters and search (Thang's addition)
+             */
+            function setupFilterListeners() {
+                // Search input
+                const searchInput = document.getElementById('searchKeyword');
+                if (searchInput) {
+                    searchInput.addEventListener('keyup', applyFilters);
+                    searchInput.addEventListener('change', applyFilters);
+                }
+
+                // Category filter
+                const categorySelect = document.getElementById('Category');
+                if (categorySelect) {
+                    categorySelect.addEventListener('change', applyFilters);
+                }
+
+                // Price filter
+                const priceSelect = document.getElementById('Price');
+                if (priceSelect) {
+                    priceSelect.addEventListener('change', applyFilters);
+                }
+
+                // Availability filter
+                const availabilitySelect = document.getElementById('Availability');
+                if (availabilitySelect) {
+                    availabilitySelect.addEventListener('change', applyFilters);
+                }
+            }
+
+            /**
+             * Apply filters and search to product grid (Thang's addition)
+             */
+            function applyFilters() {
+                const searchKeyword = document.getElementById('searchKeyword')?.value || '';
+                const selectedCategory = document.getElementById('Category')?.value || '';
+                const selectedPrice = document.getElementById('Price')?.value || '';
+                const selectedAvailability = document.getElementById('Availability')?.value || '';
+
+                let filtered = globalAllProducts;
+
+                // Search by keyword
+                if (searchKeyword.trim()) {
+                    const lowerKeyword = searchKeyword.toLowerCase();
+                    filtered = filtered.filter(product =>
+                        product.name.toLowerCase().includes(lowerKeyword) ||
+                        product.description.toLowerCase().includes(lowerKeyword)
+                    );
+                }
+
+                // Filter by category
+                if (selectedCategory) {
+                    filtered = filtered.filter(product => product.category === selectedCategory);
+                }
+
+                // Filter by price range
+                if (selectedPrice) {
+                    const [minPrice, maxPrice] = selectedPrice.split('-').map(Number);
+                    filtered = filtered.filter(product =>
+                        product.price >= minPrice && product.price <= maxPrice
+                    );
+                }
+
+                // Filter by availability
+                if (selectedAvailability === 'inStock') {
+                    filtered = filtered.filter(product => product.isInStock());
+                } else if (selectedAvailability === 'outOfStock') {
+                    filtered = filtered.filter(product => !product.isInStock());
+                }
+
+                displayProducts(filtered);
+            }
+
+            /**
+             * Display products in the grid (Thang's addition)
+             */
+            function displayProducts(products) {
+                const container = document.getElementById('productsContainer');
+
+                if (!products || products.length === 0) {
+                    container.innerHTML = '<div class="no-results">No products found. Try different filters.</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                products.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+
+                    const stockClass = product.isInStock() ? 'stock-in' : 'stock-out';
+                    const stockText = product.isInStock() ? `In Stock (${product.availableStock})` : 'Out of Stock';
+                    const isDisabled = !product.isInStock();
+
+                    card.innerHTML = `
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-description">${product.description}</div>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <div class="product-stock ${stockClass}">${stockText}</div>
+                        <small style="color: #999;">Supplier: ${product.supplier}</small>
+                        <div class="product-actions">
+                            <button class="btn-add-cart" ${isDisabled ? 'disabled' : ''} data-id="${product.productID}" data-name="${product.name}">
+                                ${isDisabled ? 'Out of Stock' : 'Add to Cart'}
+                            </button>
+                        </div>
+                    `;
+
+                    container.appendChild(card);
+                });
+
+                // Attach add-to-cart handlers
+                container.querySelectorAll('.btn-add-cart').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = parseInt(btn.getAttribute('data-id'), 10);
+                        const name = btn.getAttribute('data-name');
+                        // simple cart in localStorage
+                        let cart = JSON.parse(localStorage.getItem('shoppingCart')) || [];
+                        const existing = cart.find(item => item.productID === id);
+                        if (existing) existing.quantity += 1;
+                        else cart.push({ productID: id, name: name, quantity: 1 });
+                        localStorage.setItem('shoppingCart', JSON.stringify(cart));
+                        alert(`"${name}" added to cart`);
+                    });
+                });
+            }
         </script>
     </body>
 </html>
