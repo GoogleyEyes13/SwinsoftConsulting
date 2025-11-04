@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((data) => {
         data.Product.forEach((Product) => {
             const card = `
-            <div class="col-sm-12 col-md-4 col-lg-3 mb-4">
-                <div class="card h-100 shadow-sm">
-                <img src="${Product.Image}" class="card-img-top" alt="${Product.Name}" onerror="this.src='https://via.placeholder.com/150'">
+            <div class="col-sm-6 col-md-3 col-lg-3">
+                <div class="card shadow-sm">
+                <img src="${Product.Image}" class="card-img-top StoreCatalogueImage" alt="${Product.Name}">
                 <div class="card-body">
                     <h5 class="card-title">${Product.Name}</h5>
                     <p class="card-text">${Product.Description}</p>

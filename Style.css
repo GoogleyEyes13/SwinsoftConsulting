@@ -43,9 +43,12 @@ h1 {
 
 /* STORE CATALOGUE DISPLAY */
 .StoreCatalogueImage {
-    width: 100%;      
-    height: 200px;  
-    object-fit: cover; 
-    border-radius: 10px;
+    width: auto;      
+    height: 250px;  
+    object-fit: contain; 
+    border-radius: 20px;
+    padding-top: 20px;
 }
+
+
 
