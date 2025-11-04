@@ -42,6 +42,10 @@ h1 {
 }
 
 /* STORE CATALOGUE DISPLAY */
+.StoreCatalogueCard {
+    height: 450px;
+}
+
 .StoreCatalogueImage {
     width: auto;      
     height: 250px;  

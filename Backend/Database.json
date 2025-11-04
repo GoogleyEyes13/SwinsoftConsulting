@@ -10,13 +10,40 @@
             "Image": "Backend/ProductImages/MangoLoco.png"
         },
         {
+            "Name": "Deep Cycle Lithium Battery - iTechWorld",
+            "Description": "Powerful, lightweight, bluetooth battery. 120Ah lihtium battery featuring 100% usable capacity.",
+            "Category": "Battery",
+            "Price": "$600",
+            "AvailableStock": "10",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/LithiumBattery.png"
+        },
+        {
+            "Name": "Winston - Rabbit",
+            "Description": "An adorable, grey/brown furred bunny rabbit.",
+            "Category": "Pets",
+            "Price": "$1,000,000",
+            "AvailableStock": "1",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/Winston.png"
+        },
+        {
+            "Name": "White Bread",
+            "Description": "700g of vitamin-rich white sliced bread.",
+            "Category": "Food",
+            "Price": "$4.50",
+            "AvailableStock": "80",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/WhiteBread.png"
+        },
+        {
             "Name": "",
-            "Description": "Description2",
-            "Category": "CarBattery",
-            "Price": "Price2",
-            "AvailableStock": "Stock2",
-            "Supplier": "Supplier2",
-            "Image": "Image2"
+            "Description": "",
+            "Category": "",
+            "Price": "",
+            "AvailableStock": "",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/"
         }
     ],
 
