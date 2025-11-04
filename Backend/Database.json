@@ -37,13 +37,58 @@
             "Image": "Backend/ProductImages/WhiteBread.png"
         },
         {
-            "Name": "",
-            "Description": "",
-            "Category": "",
-            "Price": "",
-            "AvailableStock": "",
+            "Name": "Nutri Grain",
+            "Description": "Kellogg's protein breakfast cereal.",
+            "Category": "Food",
+            "Price": "$8.00",
+            "AvailableStock": "60",
             "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/"
+            "Image": "Backend/ProductImages/NutriGrain.png"
+        },
+        {
+            "Name": "UP&GO 6 Pack - Choc Ice",
+            "Description": "A liquid breakfast with protein and fibre.",
+            "Category": "Drink",
+            "Price": "$13.00",
+            "AvailableStock": "38",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/UpAndGo.png"
+        },
+        {
+            "Name": "Coloured Pencils 12 Pack",
+            "Description": "12 different coloured pencils to draw, colour or create with.",
+            "Category": "Stationary",
+            "Price": "$1.49",
+            "AvailableStock": "20",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/ColouredPencils.png"
+        },
+        {
+            "Name": "USB-C Charging Cable",
+            "Description": "A 1-metre long 60W charging cable with USB-C connectors.",
+            "Category": "Electronics",
+            "Price": "$29.00",
+            "AvailableStock": "50",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/Charger.png"
+        },
+        {
+            "Name": "Salt & Vinegar Chips",
+            "Description": "170g of Smiths salt & vinegar flavoued crinkle-cut potato chips.",
+            "Category": "Food",
+            "Price": "$5.00",
+            "AvailableStock": "64",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/VinegarChips.png"
+        },
+        {
+            "Name": "Chicken Crimpy Shapes",
+            "Description": "175g of Arnott's Shapes original Chicken Crimpy flavour.",
+            "Category": "Food",
+            "Price": "$4.00",
+            "AvailableStock": "57",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/ChickenChips.png"
         }
     ],
 
