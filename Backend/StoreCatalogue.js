@@ -9,25 +9,25 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetching each element in the Product section of the database
     // Then displaying it
     fetch("Backend/Database.json")
-        .then((res) => res.json())
-        .then((data) => {
-            AllProducts = data.Product; 
-            DisplayProducts(AllProducts); 
+        .then((Res) => Res.json())
+        .then((Data) => {
+            AllProducts = Data.Product;
+            DisplayProducts(AllProducts);
         })
-        .catch((err) => console.error("Error loading JSON:", err));
+        .catch((Err) => console.error("Error loading JSON:", Err));
 
     function DisplayProducts(Products) {
         ProductList.innerHTML = "";
-
+        
         // If no items are found, display a message to user
         if (Products.length === 0) {
             ProductList.innerHTML = `<h5>No products found.</h5>`;
             return;
         }
-
+        
         // Store item display
         Products.forEach((Product) => {
-            const card = `
+            const Card = `
             <div class="col-sm-6 col-md-3 col-lg-3">
                 <div class="card shadow-sm StoreCatalogueCard">
                     <img src="${Product.Image}" class="card-img-top StoreCatalogueImage" alt="${Product.Name}">
@@ -36,17 +36,26 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p class="card-text">${Product.Description}</p>
                         <p><strong>Price: </strong>$${Product.Price}</p>
                         <p><strong>Stock:</strong> ${Product.AvailableStock}</p>
+                        <button class="btn btn-primary AddToCartBtn" data-product='${JSON.stringify(Product)}'>Add To Cart</button>
                     </div>
                 </div>
             </div>
             `;
-            ProductList.insertAdjacentHTML("beforeend", card);
+            ProductList.insertAdjacentHTML("beforeend", Card);
+        });
+
+        // Attach event listeners to the "Add To Cart" buttons
+        document.querySelectorAll(".AddToCartBtn").forEach((Button) => {
+            Button.addEventListener("click", (Event) => {
+                const Product = JSON.parse(Event.target.getAttribute("data-product"));
+                AddToCart(Product); // Calls the function from ShoppingCart.js
+            });
         });
     }
-
+    
     // Check for user input in the search bar and change what items are displayed
     function FilterProducts() {
-        const SearchInputAdjust = SearchInput.value.toLowerCase().trim();
+        const SearchInputValue = SearchInput.value.toLowerCase().trim();
         const SelectedCategory = CategorySelect.value;
         const SelectedPrice = PriceSelect.value;
         const SelectedAvailability = AvailabilitySelect.value;
@@ -55,12 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const PriceValue = parseFloat(Product.Price.replace(/[^0-9.]/g, "")) || 0;
             const StockValue = parseInt(Product.AvailableStock, 10) || 0;
 
+            // Match search term
             const MatchesSearch =
-                Product.Name.toLowerCase().includes(SearchInputAdjust) ||
-                Product.Description.toLowerCase().includes(SearchInputAdjust)
+                Product.Name.toLowerCase().includes(SearchInputValue) ||
+                Product.Description.toLowerCase().includes(SearchInputValue);
 
+            // Match category
             const MatchesCategory = SelectedCategory === "None" || Product.Category === SelectedCategory;
 
+            // Match price
             let MatchesPrice = true;
             switch (SelectedPrice) {
                 case "Free":
@@ -82,17 +94,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     MatchesPrice = true;
                     break;
             }
-            
+
+            // Match availability
             let MatchesAvailability = true;
             switch (SelectedAvailability) {
                 case "Low":
                     MatchesAvailability = StockValue < 30;
                     break;
                 case "Medium":
-                    MatchesAvailability = StockValue < 60 && StockValue > 29;
+                    MatchesAvailability = StockValue >= 30 && StockValue <= 60;
                     break;
                 case "High":
-                    MatchesAvailability = StockValue > 59;
+                    MatchesAvailability = StockValue > 60;
                     break;
                 default:
                     MatchesAvailability = true;
@@ -105,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         DisplayProducts(FilteredProducts);
     }
 
+    // Event listeners for search and filter changes
     SearchInput.addEventListener("input", FilterProducts);
     CategorySelect.addEventListener("change", FilterProducts);
     PriceSelect.addEventListener("change", FilterProducts);
