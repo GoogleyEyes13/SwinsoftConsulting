@@ -4,7 +4,7 @@
             "Name": "Monster Energy - Mango Loco",
             "Description": "Mango flavoured energy drink.",
             "Category": "Drink",
-            "Price": "$4.30",
+            "Price": "4.30",
             "AvailableStock": "57",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/MangoLoco.png"
@@ -13,7 +13,7 @@
             "Name": "Deep Cycle Lithium Battery - iTechWorld",
             "Description": "Powerful, lightweight, bluetooth battery. 120Ah lihtium battery featuring 100% usable capacity.",
             "Category": "Battery",
-            "Price": "$600",
+            "Price": "600",
             "AvailableStock": "10",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/LithiumBattery.png"
@@ -22,7 +22,7 @@
             "Name": "Winston - Rabbit",
             "Description": "An adorable, brown fluffy bunny rabbit.",
             "Category": "Pets",
-            "Price": "$1,000,000",
+            "Price": "1,000,000",
             "AvailableStock": "1",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/Winston.png"
@@ -31,7 +31,7 @@
             "Name": "White Bread",
             "Description": "700g of vitamin-rich white sliced bread.",
             "Category": "Food",
-            "Price": "$4.50",
+            "Price": "4.50",
             "AvailableStock": "80",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/WhiteBread.png"
@@ -40,7 +40,7 @@
             "Name": "Nutri Grain",
             "Description": "Kellogg's protein breakfast cereal.",
             "Category": "Food",
-            "Price": "$8.00",
+            "Price": "8.00",
             "AvailableStock": "60",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/NutriGrain.png"
@@ -49,7 +49,7 @@
             "Name": "UP&GO 6 Pack - Choc Ice",
             "Description": "A liquid breakfast with protein and fibre.",
             "Category": "Drink",
-            "Price": "$13.00",
+            "Price": "13.00",
             "AvailableStock": "38",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/UpAndGo.png"
@@ -58,7 +58,7 @@
             "Name": "Coloured Pencils 12 Pack",
             "Description": "12 different coloured pencils to draw, colour or create with.",
             "Category": "Stationary",
-            "Price": "$1.49",
+            "Price": "1.49",
             "AvailableStock": "20",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/ColouredPencils.png"
@@ -67,7 +67,7 @@
             "Name": "USB-C Charging Cable",
             "Description": "A 1-metre long 60W charging cable with USB-C connectors.",
             "Category": "Electronics",
-            "Price": "$29.00",
+            "Price": "29.00",
             "AvailableStock": "50",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/Charger.png"
@@ -76,7 +76,7 @@
             "Name": "Salt & Vinegar Chips",
             "Description": "170g of Smiths salt & vinegar flavoued crinkle-cut potato chips.",
             "Category": "Food",
-            "Price": "$5.00",
+            "Price": "5.00",
             "AvailableStock": "64",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/VinegarChips.png"
@@ -85,10 +85,19 @@
             "Name": "Chicken Crimpy Shapes",
             "Description": "175g of Arnott's Shapes original Chicken Crimpy flavour.",
             "Category": "Food",
-            "Price": "$4.00",
+            "Price": "4.00",
             "AvailableStock": "57",
             "Supplier": "SwinsoftSupplier",
             "Image": "Backend/ProductImages/ChickenChips.png"
+        },
+        {
+            "Name": "Flux Capacitor",
+            "Description": "A device capable of opening a hole in the fabric of space time. Made by Doc Brown.",
+            "Category": "Electronics",
+            "Price": "250,000",
+            "AvailableStock": "0",
+            "Supplier": "SwinsoftSupplier",
+            "Image": "Backend/ProductImages/FluxCapacitor.png"
         }
     ],
 
