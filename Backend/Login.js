@@ -144,25 +144,26 @@ function HandleLoginSubmit(Event) {
 
 function HandleSignupSubmit(Event) {
   Event.preventDefault();
-  const Username = document.getElementById('SignupUsername').value.trim();
-  const Password = document.getElementById('SignupPassword').value.trim();
-    const Email = document.getElementById('SignupEmail').value.trim();
-    const DeliveryAddress = document.getElementById('DeliveryAddress').value.trim();
-    const PaymentMethod = document.getElementById('PaymentMethod').value;
-    if (!Email || !DeliveryAddress || !PaymentMethod) {
-      alert('Please fill in all fields.');
-      return;
-    }
-    Result = Account.CreateCustomer(Username, Email, Password, DeliveryAddress, PaymentMethod);
-  }
-  if (Result.success) {
 
-    // Auto login
+  const Username = document.getElementById('SignupUsername').value.trim();
+  const Email = document.getElementById('SignupEmail').value.trim();
+  const Password = document.getElementById('SignupPassword').value.trim();
+  const DeliveryAddress = document.getElementById('DeliveryAddress').value.trim();
+  const PaymentMethod = document.getElementById('PaymentMethod').value;
+
+  if (!Username || !Email || !Password || !DeliveryAddress || !PaymentMethod) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+
+  // Auto Login
+  const Result = Account.CreateCustomer(Username, Email, Password, DeliveryAddress, PaymentMethod);
+
+  if (Result.success) {
     const loginResult = Account.Login(Username, Password);
     if (loginResult.success) {
       localStorage.setItem('LoggedInUser', JSON.stringify(loginResult.user));
-      alert(`${loginResult.user.type} account is finished`);
-      
+      alert('Customer account created and logged in successfully!');
 
       //TEMPORARY SOLUTION
       //WILL CHANGE TO SOMETHING ELSE WHEN HOSTING SHENANIGANS IS SORTED
@@ -178,16 +179,22 @@ function HandleSignupSubmit(Event) {
       document.body.removeChild(A);
       URL.revokeObjectURL(Url);
 
-
       UpdateButtonToLogout(document.querySelector('.btn.btn-primary[style="float: right;"]'));
+
       const ModalInstance = bootstrap.Modal.getInstance(document.getElementById('AuthModal'));
-      if (ModalInstance) ModalInstance.hide();
+      if (ModalInstance) {
+        ModalInstance.hide();
+
+
+      document.getElementById('SignupForm').reset();
     } else {
-      alert(':<.');
+      alert(':(');
     }
   } else {
-    alert(Result.message);
+    alert(Result.message || ':<');
   }
+}
+
 
 
 function HandleLogout(Button) {
