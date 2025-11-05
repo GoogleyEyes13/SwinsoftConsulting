@@ -1,9 +1,3 @@
-// account.js
-//const fs = require('fs');
-//const path = require('path');
-//this isn't that type of Javascript
-//const DB_PATH = path.join(__dirname, 'database.json');
-
 class Account {
   static Db = null;
 

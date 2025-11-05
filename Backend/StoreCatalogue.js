@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const ProductList = document.getElementById("ProductList");
     const SearchInput = document.querySelector('input[type="text"]');
+    const CategorySelect = document.getElementById("Category");
     let AllProducts = [];
 
     // Fetching each element in the Product section of the database
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="card-body">
                         <h5 class="card-title">${Product.Name}</h5>
                         <p class="card-text">${Product.Description}</p>
-                        <p><strong>Price:</strong> ${Product.Price}</p>
+                        <p><strong>Price: </strong>$${Product.Price}</p>
                         <p><strong>Stock:</strong> ${Product.AvailableStock}</p>
                     </div>
                 </div>
@@ -42,14 +43,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Check for user input in the search bar and change what items are displayed
-    SearchInput.addEventListener("input", () => {
+    function FilterProducts() {
         const SearchInputAdjust = SearchInput.value.toLowerCase().trim();
+        const SelectedCategory = CategorySelect.value;
 
-        const FilteredProducts = AllProducts.filter((Product) =>
-            Product.Name.toLowerCase().includes(SearchInputAdjust) ||
-            Product.Description.toLowerCase().includes(SearchInputAdjust)
-        );
+        const FilteredProducts = AllProducts.filter((Product) => {
+            const MatchesSearch =
+                Product.Name.toLowerCase().includes(SearchInputAdjust) ||
+                Product.Description.toLowerCase().includes(SearchInputAdjust)
+
+            const MatchesCategory = SelectedCategory === "None" || Product.Category === SelectedCategory;
+
+            return MatchesSearch && MatchesCategory;
+        });
 
         DisplayProducts(FilteredProducts);
-    });
+    }
+
+    SearchInput.addEventListener("input", FilterProducts);
+    CategorySelect.addEventListener("change", FilterProducts);
 });
