@@ -104,24 +104,32 @@ function CreateAuthModal() {
 }
 //the horror begins
 function ShowAuthModal() {
-    const ModalElement = document.getElementById('AuthModal');
-    if (!ModalElement) {
-        console.error('AuthModal not found in DOM');
-        return;
-    }
-    const Modal = new bootstrap.Modal(ModalElement);
-    Modal.show();
+  const ModalElement = document.getElementById('AuthModal');
+  if (!ModalElement) {
+    console.error('AuthModal not found in DOM');
+    return;
+  }
+  const Modal = new bootstrap.Modal(ModalElement);
+  Modal.show();
 
-    const LoginForm = document.getElementById('LoginForm');
-    if (LoginForm) {
-        LoginForm.addEventListener('submit', HandleLoginSubmit);
-    }
-    const SignupForm = document.getElementById('SignupForm');
-    if (SignupForm) {
-        SignupForm.addEventListener('submit', HandleSignupSubmit);
-    }
 
+  const LoginForm = document.getElementById('LoginForm');
+  const SignupForm = document.getElementById('SignupForm');
+
+  if (LoginForm) {
+    const NewLoginForm = LoginForm.cloneNode(true);
+    LoginForm.parentNode.replaceChild(NewLoginForm, LoginForm);
+    NewLoginForm.addEventListener('submit', HandleLoginSubmit);
+  }
+
+  if (SignupForm) {
+    const NewSignupForm = SignupForm.cloneNode(true);
+    SignupForm.parentNode.replaceChild(NewSignupForm, SignupForm);
+    NewSignupForm.addEventListener('submit', HandleSignupSubmit);
+  }
 }
+
+
 
 function HandleLoginSubmit(Event) {
     Event.preventDefault();
@@ -184,6 +192,7 @@ function HandleSignupSubmit(Event) {
       const ModalInstance = bootstrap.Modal.getInstance(document.getElementById('AuthModal'));
       if (ModalInstance) {
         ModalInstance.hide();
+      }
 
 
       document.getElementById('SignupForm').reset();
