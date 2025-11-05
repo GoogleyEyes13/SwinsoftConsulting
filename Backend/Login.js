@@ -210,3 +210,4 @@ function UpdateButtonToLogin(Button) {
 function UpdateButtonToLogout(Button) {
     Button.textContent = 'LogOut';
 }
+}
