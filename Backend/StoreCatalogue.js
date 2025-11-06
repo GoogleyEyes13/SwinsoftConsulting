@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
             AllProducts = Account.Db.Product;
             console.log('AllProducts:', AllProducts);
             DisplayProducts(AllProducts);
+            
+            // Add "Add New Product" button for admins
+            AddNewProductButton();
         })
         .catch((Err) => console.error("Error loading JSON:", Err));
 
@@ -122,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (NewDescription === null) return;
         
         // Validate inputs
-        if (isNaN(NewPrice) || isNaN(NewStock)) {
+        if (isNaN(NewPrice.replace(/,/g, '')) || isNaN(NewStock)) {
             alert("Price and Stock must be valid numbers!");
             return;
         }
@@ -147,6 +150,76 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert("Failed to update product");
                 });
         }
+    }
+
+    // Function to add new product for admins (using prompts)
+    function AddNewProduct() {
+        // Prompt for all product details
+        const Name = prompt("Enter product name:");
+        if (!Name) return; // User cancelled
+        
+        // Check if product name already exists
+        const exists = Account.Db.Product.find(p => p.Name.toLowerCase() === Name.toLowerCase());
+        if (exists) {
+            alert("A product with this name already exists!");
+            return;
+        }
+        
+        const Description = prompt("Enter product description:");
+        if (!Description) return;
+        
+        const Price = prompt("Enter product price (without $ symbol):");
+        if (!Price) return;
+        
+        // Validate price
+        if (isNaN(Price.replace(/,/g, ''))) {
+            alert("Price must be a valid number!");
+            return;
+        }
+        
+        const Stock = prompt("Enter available stock:");
+        if (!Stock) return;
+        
+        // Validate stock
+        if (isNaN(Stock)) {
+            alert("Stock must be a valid number!");
+            return;
+        }
+        
+        const Category = prompt("Enter category (Food, Drink, Electronics, Battery, Stationary, Pets):");
+        if (!Category) return;
+        
+        const Supplier = prompt("Enter supplier name:", "SwinsoftSupplier");
+        if (!Supplier) return;
+        
+        const Image = prompt("Enter image path (e.g., Backend/ProductImages/YourImage.png):", "Backend/ProductImages/");
+        if (!Image) return;
+        
+        // Create new product object
+        const NewProduct = {
+            Name: Name,
+            Description: Description,
+            Price: Price,
+            AvailableStock: Stock,
+            Category: Category,
+            Supplier: Supplier,
+            Image: Image
+        };
+        
+        // Add to database
+        Account.Db.Product.push(NewProduct);
+        
+        // Save to backend
+        Account.Persist()
+            .then(() => {
+                alert("Product added successfully!");
+                AllProducts = Account.Db.Product;
+                FilterProducts(); // Refresh display
+            })
+            .catch((err) => {
+                console.error("Error saving product:", err);
+                alert("Failed to add product");
+            });
     }
 
     function FilterProducts() {
@@ -186,6 +259,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(`Product: ${Product.Name}, Price: ${Price}, Filter: ${SelectedPriceRange}`);
                 
                 switch (SelectedPriceRange) {
+                    case "Free":
+                        return Price === 0;
                     case "Under50":
                         return Price < 50;
                     case "Under100":
@@ -225,6 +300,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Filtered products count:", FilteredProducts.length);
         DisplayProducts(FilteredProducts);
+    }
+
+    // Add "Add New Product" Button for Admins
+    function AddNewProductButton() {
+        const UserData = window.loggedInUser || JSON.parse(localStorage.getItem('loggedInUser') || 'null');
+        
+        if (!UserData || UserData.type !== 'Admin') {
+            return; // Not an admin, don't add button
+        }
+        
+        // Check if button already exists
+        if (document.getElementById('add-product-btn')) {
+            return;
+        }
+        
+        // Find the ProductList container's parent to add button above it
+        const ProductList = document.getElementById('ProductList');
+        if (!ProductList) return;
+        
+        const Container = ProductList.parentElement;
+        
+        // Create button container
+        const ButtonContainer = document.createElement('div');
+        ButtonContainer.className = 'row mb-3';
+        ButtonContainer.innerHTML = `
+            <div class="col-12 text-end">
+                <button id="add-product-btn" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Add New Product
+                </button>
+            </div>
+        `;
+        
+        // Insert before ProductList
+        Container.insertBefore(ButtonContainer, ProductList);
+        
+        // Add click event
+        document.getElementById('add-product-btn').addEventListener('click', AddNewProduct);
     }
 
     // Event listeners for filters - check if elements exist first
