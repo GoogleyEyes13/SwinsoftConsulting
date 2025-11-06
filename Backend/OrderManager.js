@@ -1,4 +1,20 @@
-// OrderManager.js - Generates and downloads order.txt from shopping cart
+// OrderManager.js - Generates and downloads order.txt from shopping cart with user account data
+
+function GetUserData() {
+    // Try to get logged-in user from localStorage
+    const storedUser = localStorage.getItem('loggedInUser');
+    
+    if (storedUser) {
+        return JSON.parse(storedUser);
+    }
+    
+    // Fallback: check window.loggedInUser
+    if (window.loggedInUser) {
+        return window.loggedInUser;
+    }
+    
+    return null;
+}
 
 function GenerateOrderText() {
     const Cart = JSON.parse(localStorage.getItem("ShoppingCart")) || [];
@@ -21,6 +37,9 @@ function GenerateOrderText() {
     // Generate unique order ID
     const OrderID = `ORD-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     
+    // Get user data
+    const UserData = GetUserData();
+    
     // Build the order text
     let OrderText = "";
     OrderText += "═══════════════════════════════════════════════════════\n";
@@ -30,6 +49,25 @@ function GenerateOrderText() {
     OrderText += `Order ID: ${OrderID}\n`;
     OrderText += `Date: ${OrderDate}\n`;
     OrderText += `Time: ${OrderTime}\n\n`;
+    
+    // Add customer information section
+    OrderText += "───────────────────────────────────────────────────────\n";
+    OrderText += "CUSTOMER INFORMATION\n";
+    OrderText += "───────────────────────────────────────────────────────\n\n";
+    
+    if (UserData && UserData.type === 'Customer') {
+        OrderText += `Account ID: ${UserData.AccountID || 'N/A'}\n`;
+        OrderText += `Username: ${UserData.Username || 'N/A'}\n`;
+        OrderText += `Email: ${UserData.Email || 'N/A'}\n`;
+        OrderText += `Delivery Address: ${UserData.DeliveryAddress || 'Not provided'}\n`;
+        OrderText += `Payment Method: ${UserData.PaymentMethod || 'Not provided'}\n\n`;
+    } else if (UserData && UserData.type === 'Admin') {
+        OrderText += `Admin Account: ${UserData.Username || 'N/A'}\n`;
+        OrderText += `Note: Admin accounts do not have delivery or payment information.\n\n`;
+    } else {
+        OrderText += "Guest Checkout (No account information available)\n";
+        OrderText += "Please log in to save your delivery and payment details.\n\n";
+    }
     
     OrderText += "───────────────────────────────────────────────────────\n";
     OrderText += "ORDER ITEMS\n";
@@ -52,7 +90,20 @@ function GenerateOrderText() {
     OrderText += `TOTAL AMOUNT: $${Total.toFixed(2)}\n`;
     OrderText += "───────────────────────────────────────────────────────\n\n";
     
+    // Add shipping information if available
+    if (UserData && UserData.type === 'Customer' && UserData.DeliveryAddress) {
+        OrderText += "SHIPPING INFORMATION\n";
+        OrderText += `Ship to: ${UserData.DeliveryAddress}\n`;
+        OrderText += `Payment via: ${UserData.PaymentMethod || 'Not specified'}\n\n`;
+    }
+    
     OrderText += "Thank you for shopping with Swinsoft!\n";
+    
+    if (!UserData || UserData.type !== 'Customer') {
+        OrderText += "\nTip: Create an account to save your delivery address and\n";
+        OrderText += "payment information for faster checkout next time!\n";
+    }
+    
     OrderText += "═══════════════════════════════════════════════════════\n";
     
     return OrderText;
