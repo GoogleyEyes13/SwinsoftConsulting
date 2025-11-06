@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p class="card-text">${Product.Description}</p>
                         <p><strong>Price: </strong>$${Product.Price}</p>
                         <p><strong>Stock:</strong> ${Product.AvailableStock}</p>
-                        <button class="btn btn-primary AddToCartBtn" data-product='${JSON.stringify(Product)}'>Add To Cart</button>
+                        <button class="btn btn-primary AddToCartBtn" data-product='${JSON.stringify(Product)}'>Edit</button>
                         ${IsAdmin ? `<button class="btn btn-danger DeleteItemBtn" data-index="${Index}">Delete Item</button>` : ""}
                     </div>
                 </div>

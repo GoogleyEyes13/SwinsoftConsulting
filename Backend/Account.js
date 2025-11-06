@@ -1,4 +1,4 @@
-class Account {
+  class Account {
   static Db = null;
   static currentUser = null;
 
