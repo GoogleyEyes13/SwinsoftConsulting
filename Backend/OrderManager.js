@@ -1,6 +1,7 @@
 // OrderManager.js - Generates and downloads order.txt from shopping cart with user account data
 // Also saves order details to database.json
 // Admins can view all orders from the database
+// Deducts stock quantities on successful checkout
 
 function GetUserData() {
     // Try to get logged-in user from localStorage
@@ -155,6 +156,72 @@ function GenerateOrderText() {
     return OrderText;
 }
 
+async function DeductStockFromProducts() {
+    const Cart = JSON.parse(localStorage.getItem("ShoppingCart")) || [];
+    
+    try {
+        // Fetch current database
+        const dbResponse = await fetch('http://localhost:5000/database');
+        const database = await dbResponse.json();
+        
+        // Update stock for each product in cart
+        let stockUpdated = false;
+        
+        Cart.forEach(cartItem => {
+            // Find the product in database by name
+            const productIndex = database.Product.findIndex(p => p.Name === cartItem.Name);
+            
+            if (productIndex !== -1) {
+                const product = database.Product[productIndex];
+                const currentStock = parseInt(product.AvailableStock);
+                const orderedQuantity = parseInt(cartItem.Quantity);
+                
+                // Calculate new stock
+                const newStock = Math.max(0, currentStock - orderedQuantity);
+                
+                // Update stock in database
+                database.Product[productIndex].AvailableStock = newStock.toString();
+                
+                console.log(`Stock updated for ${product.Name}: ${currentStock} → ${newStock}`);
+                stockUpdated = true;
+            }
+        });
+        
+        if (stockUpdated) {
+            // Save updated database back to server
+            const updateResponse = await fetch('http://localhost:5000/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(database)
+            });
+            
+            const result = await updateResponse.json();
+            
+            if (result.success) {
+                console.log('Stock levels updated successfully in database');
+                
+                // Update local Account.Db if it exists
+                if (typeof Account !== 'undefined' && Account.Db) {
+                    Account.Db.Product = database.Product;
+                }
+                
+                return true;
+            } else {
+                console.error('Failed to update stock levels:', result.message);
+                return false;
+            }
+        }
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Error updating stock levels:', error);
+        return false;
+    }
+}
+
 async function SaveOrderToDatabase() {
     const OrderObject = GenerateOrderObject();
     
@@ -195,21 +262,50 @@ async function SaveOrderToDatabase() {
     }
 }
 
-function DownloadOrderFile() {
+async function DownloadOrderFile() {
     const OrderText = GenerateOrderText();
     
     if (!OrderText) {
         return; // Cart was empty
     }
     
-    // Save order to database first
-    SaveOrderToDatabase().then(success => {
-        if (success) {
+    // Save order to database and deduct stock
+    try {
+        // First, save the order
+        const orderSaved = await SaveOrderToDatabase();
+        
+        if (orderSaved) {
             console.log('Order successfully saved to database');
+            
+            // Then, deduct stock from products
+            const stockUpdated = await DeductStockFromProducts();
+            
+            if (stockUpdated) {
+                console.log('Stock levels successfully updated');
+                
+                // Clear the shopping cart after successful checkout
+                localStorage.removeItem('ShoppingCart');
+                
+                // Refresh the shopping cart display if the function exists
+                if (typeof RenderCartItems === 'function') {
+                    RenderCartItems();
+                }
+                
+                // Refresh the catalogue if the function exists
+                if (typeof window.refreshCatalogue === 'function') {
+                    setTimeout(() => {
+                        window.refreshCatalogue();
+                    }, 500);
+                }
+            } else {
+                console.warn('Stock levels could not be updated, but order was saved');
+            }
         } else {
             console.warn('Order could not be saved to database, but download will continue');
         }
-    });
+    } catch (error) {
+        console.error('Error during checkout process:', error);
+    }
     
     // Create a Blob from the text
     const Blob = new window.Blob([OrderText], { type: 'text/plain' });

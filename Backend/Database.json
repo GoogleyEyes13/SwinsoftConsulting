@@ -52,6 +52,54 @@
             "Timestamp": "2025-11-06T13:51:58.993Z",
             "TotalAmount": 9,
             "TotalItems": 2
+        },
+        {
+            "CustomerInfo": {
+                "AccountID": "ACC-1762400801993-3066",
+                "DeliveryAddress": "123",
+                "Email": "LBJ@gmail.com",
+                "PaymentMethod": "Credit Card",
+                "Username": "Lebron James"
+            },
+            "Date": "Friday 7 November 2025",
+            "Items": [
+                {
+                    "Name": "Deep Cycle Lithium Battery - iTechWorld",
+                    "Price": 600,
+                    "Quantity": 1,
+                    "Subtotal": 600
+                }
+            ],
+            "OrderID": "ORD-1762441814402-2071",
+            "Status": "Completed",
+            "Time": "2:10:14 am",
+            "Timestamp": "2025-11-06T15:10:14.402Z",
+            "TotalAmount": 600,
+            "TotalItems": 1
+        },
+        {
+            "CustomerInfo": {
+                "AccountID": "ACC-1762400801993-3066",
+                "DeliveryAddress": "123",
+                "Email": "LBJ@gmail.com",
+                "PaymentMethod": "Credit Card",
+                "Username": "Lebron James"
+            },
+            "Date": "Friday 7 November 2025",
+            "Items": [
+                {
+                    "Name": "Chicken Crimpy Shapes",
+                    "Price": 4,
+                    "Quantity": 1,
+                    "Subtotal": 4
+                }
+            ],
+            "OrderID": "ORD-1762442040573-6218",
+            "Status": "Completed",
+            "Time": "2:14:00 am",
+            "Timestamp": "2025-11-06T15:14:00.573Z",
+            "TotalAmount": 4,
+            "TotalItems": 1
         }
     ],
     "Product": [
@@ -137,7 +185,7 @@
             "Supplier": "SwinsoftSupplier"
         },
         {
-            "AvailableStock": "57",
+            "AvailableStock": "56",
             "Category": "Food",
             "Description": "175g of Arnott's Shapes original Chicken Crimpy flavour.",
             "Image": "Backend/ProductImages/ChickenChips.png",
