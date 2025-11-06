@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const PriceSelect = document.getElementById("Price");
     const AvailabilitySelect = document.getElementById("Availability");
     let AllProducts = [];
+    window.refreshCatalogue = function() {
+    FilterProducts();
+};
 
     // Fetching each element in the Product section of the database
     // Then displaying it
@@ -33,8 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Store item display
         Products.forEach((Product, Index) => {
-            const LoggedInUser = JSON.parse(localStorage.getItem('LoggedInUser'));
-            const IsAdmin = LoggedInUser && LoggedInUser.type === 'Admin';
+            const IsAdmin = window.loggedInUser && window.loggedInUser.type === 'Admin';
 
             const Card = `
             <div class="col-sm-6 col-md-3 col-lg-3">
@@ -52,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             `;
             ProductList.insertAdjacentHTML("beforeend", Card);
+            
         });
 
         // Attach event listeners to the "Add To Cart" buttons
