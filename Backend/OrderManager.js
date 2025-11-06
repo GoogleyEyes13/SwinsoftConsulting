@@ -1,4 +1,5 @@
 // OrderManager.js - Generates and downloads order.txt from shopping cart with user account data
+// Also saves order details to database.json
 
 function GetUserData() {
     // Try to get logged-in user from localStorage
@@ -14,6 +15,50 @@ function GetUserData() {
     }
     
     return null;
+}
+
+function GenerateOrderObject() {
+    const Cart = JSON.parse(localStorage.getItem("ShoppingCart")) || [];
+    const UserData = GetUserData();
+    const Now = new Date();
+    
+    // Generate unique order ID
+    const OrderID = `ORD-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    
+    // Calculate totals
+    const Total = Cart.reduce((sum, item) => sum + (item.Price * item.Quantity), 0);
+    const TotalItems = Cart.reduce((sum, item) => sum + item.Quantity, 0);
+    
+    // Build order object for database
+    const OrderObject = {
+        OrderID: OrderID,
+        Timestamp: Now.toISOString(),
+        Date: Now.toLocaleDateString('en-AU', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }),
+        Time: Now.toLocaleTimeString('en-AU'),
+        CustomerInfo: {
+            AccountID: UserData?.AccountID || 'Guest',
+            Username: UserData?.Username || 'Guest',
+            Email: UserData?.Email || 'N/A',
+            DeliveryAddress: UserData?.DeliveryAddress || 'Not provided',
+            PaymentMethod: UserData?.PaymentMethod || 'Not provided'
+        },
+        Items: Cart.map(item => ({
+            Name: item.Name,
+            Price: item.Price,
+            Quantity: item.Quantity,
+            Subtotal: item.Price * item.Quantity
+        })),
+        TotalItems: TotalItems,
+        TotalAmount: Total,
+        Status: 'Completed'
+    };
+    
+    return OrderObject;
 }
 
 function GenerateOrderText() {
@@ -109,12 +154,61 @@ function GenerateOrderText() {
     return OrderText;
 }
 
+async function SaveOrderToDatabase() {
+    const OrderObject = GenerateOrderObject();
+    
+    try {
+        // Fetch current database
+        const dbResponse = await fetch('http://localhost:5000/database');
+        const database = await dbResponse.json();
+        
+        // Initialize Orders array if it doesn't exist
+        if (!database.Orders) {
+            database.Orders = [];
+        }
+        
+        // Add new order to Orders array
+        database.Orders.push(OrderObject);
+        
+        // Save updated database
+        const updateResponse = await fetch('http://localhost:5000/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(database)
+        });
+        
+        const result = await updateResponse.json();
+        
+        if (result.success) {
+            console.log('Order saved to database successfully!', OrderObject);
+            return true;
+        } else {
+            console.error('Failed to save order to database:', result.message);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error saving order to database:', error);
+        return false;
+    }
+}
+
 function DownloadOrderFile() {
     const OrderText = GenerateOrderText();
     
     if (!OrderText) {
         return; // Cart was empty
     }
+    
+    // Save order to database first
+    SaveOrderToDatabase().then(success => {
+        if (success) {
+            console.log('Order successfully saved to database');
+        } else {
+            console.warn('Order could not be saved to database, but download will continue');
+        }
+    });
     
     // Create a Blob from the text
     const Blob = new window.Blob([OrderText], { type: 'text/plain' });
