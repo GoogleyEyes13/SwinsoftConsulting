@@ -26,7 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         // Store item display
-        Products.forEach((Product) => {
+        Products.forEach((Product, Index) => {
+            const LoggedInUser = JSON.parse(localStorage.getItem('LoggedInUser'));
+            const IsAdmin = LoggedInUser && LoggedInUser.type === 'Admin';
+
             const Card = `
             <div class="col-sm-6 col-md-3 col-lg-3">
                 <div class="card shadow-sm StoreCatalogueCard">
@@ -37,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <p><strong>Price: </strong>$${Product.Price}</p>
                         <p><strong>Stock:</strong> ${Product.AvailableStock}</p>
                         <button class="btn btn-primary AddToCartBtn" data-product='${JSON.stringify(Product)}'>Add To Cart</button>
+                        ${IsAdmin ? `<button class="btn btn-danger DeleteItemBtn" data-index="${Index}">Delete Item</button>` : ""}
                     </div>
                 </div>
             </div>
@@ -51,8 +55,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 AddToCart(Product); // Calls the function from ShoppingCart.js
             });
         });
+
+        // Attach event listeners to Delete buttons (for admins)
+        document.querySelectorAll(".DeleteItemBtn").forEach((Button) => {
+            Button.addEventListener("click", (Event) => {
+                const Index = parseInt(Event.target.getAttribute("data-index"));
+                AllProducts.splice(Index, 1); // Remove from the array
+                DisplayProducts(AllProducts); // Refresh display
+            });
+        });
     }
-    
+
     // Check for user input in the search bar and change what items are displayed
     function FilterProducts() {
         const SearchInputValue = SearchInput.value.toLowerCase().trim();
