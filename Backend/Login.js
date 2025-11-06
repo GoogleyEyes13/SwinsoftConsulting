@@ -1,5 +1,3 @@
-//login.js
-
 document.addEventListener("DOMContentLoaded", () => {
     const LoginButton = document.querySelector('.btn.btn-primary[style="float: right;"]');
     const AuthModal = CreateAuthModal();
@@ -102,6 +100,7 @@ function CreateAuthModal() {
 
     return Modal;
 }
+
 //the horror begins
 function ShowAuthModal() {
   const ModalElement = document.getElementById('AuthModal');
@@ -129,8 +128,6 @@ function ShowAuthModal() {
   }
 }
 
-
-
 function HandleLoginSubmit(Event) {
     Event.preventDefault();
     const Username = document.getElementById('LoginUsername').value.trim();
@@ -139,14 +136,11 @@ function HandleLoginSubmit(Event) {
     const Result = Account.Login(Username, Password);
     if (Result.success) {
         localStorage.setItem('LoggedInUser', JSON.stringify(Result.user));
-        alert(`Logged in as ${Result.user.type}!`);
         UpdateButtonToLogout(document.querySelector('.btn.btn-primary[style="float: right;"]'));
         const ModalInstance = bootstrap.Modal.getInstance(document.getElementById('AuthModal'));
         if (ModalInstance) {
             ModalInstance.hide();
         }
-    } else {
-        alert(Result.message || 'Invalid username or password.');
     }
 }
 
@@ -160,7 +154,6 @@ function HandleSignupSubmit(Event) {
   const PaymentMethod = document.getElementById('PaymentMethod').value;
 
   if (!Username || !Email || !Password || !DeliveryAddress || !PaymentMethod) {
-    alert('Please fill in all required fields.');
     return;
   }
 
@@ -171,7 +164,6 @@ function HandleSignupSubmit(Event) {
     const loginResult = Account.Login(Username, Password);
     if (loginResult.success) {
       localStorage.setItem('LoggedInUser', JSON.stringify(loginResult.user));
-      alert('Customer account created and logged in successfully!');
 
       //TEMPORARY SOLUTION
       //WILL CHANGE TO SOMETHING ELSE WHEN HOSTING SHENANIGANS IS SORTED
@@ -196,19 +188,12 @@ function HandleSignupSubmit(Event) {
 
 
       document.getElementById('SignupForm').reset();
-    } else {
-      alert(':(');
     }
-  } else {
-    alert(Result.message || ':<');
+    }
   }
-}
-
-
 
 function HandleLogout(Button) {
     localStorage.removeItem('LoggedInUser');
-    alert('Logged out!');
     UpdateButtonToLogin(Button);
 }
 

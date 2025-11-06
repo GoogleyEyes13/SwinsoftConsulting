@@ -21,13 +21,34 @@ function AddToCart(Product) {
 
     const Existing = Cart.find(item => item.Name === Product.Name);
     if (Existing) {
-        Existing.Quantity += 1;
+        // Only increase if there's enough stock
+        if (Existing.Quantity < parseInt(Product.AvailableStock, 10)) {
+            Existing.Quantity += 1;
+        }
     } else {
         Cart.push({
             Name: Product.Name,
             Price: parseFloat(Product.Price.replace(/[^0-9.]/g, "")),
-            Quantity: 1
+            Quantity: 1,
+            AvailableStock: parseInt(Product.AvailableStock, 10)
         });
+    }
+
+    localStorage.setItem("ShoppingCart", JSON.stringify(Cart));
+    RenderCartItems();
+}
+
+// Update quantity of items
+function UpdateQuantity(Index, NewQty) {
+    const Cart = JSON.parse(localStorage.getItem("ShoppingCart")) || [];
+    if (NewQty < 1) return;
+
+    // Limit quantity to stock
+    const MaxStock = Cart[Index].AvailableStock;
+    if (NewQty > MaxStock) {
+        Cart[Index].Quantity = MaxStock;
+    } else {
+        Cart[Index].Quantity = NewQty;
     }
 
     localStorage.setItem("ShoppingCart", JSON.stringify(Cart));
@@ -92,7 +113,8 @@ function RenderCartItems() {
             <div class="col-3"><strong>${Item.Name}</strong></div>
             <div class="col-2">$${Item.Price.toFixed(2)}</div>
             <div class="col-3">
-                <input type="number" class="form-control form-control-sm" min="1" value="${Item.Quantity}" id="Quantity-${Index}">
+                <input type="number" class="form-control form-control-sm" min="1" 
+                       max="${Item.AvailableStock}" value="${Item.Quantity}" id="Quantity-${Index}">
             </div>
             <div class="col-2">$${Subtotal.toFixed(2)}</div>
             <div class="col-2">
@@ -102,8 +124,13 @@ function RenderCartItems() {
         Container.appendChild(ItemRow);
 
         document.getElementById(`Quantity-${Index}`).addEventListener("change", (e) => {
-            UpdateQuantity(Index, parseInt(e.target.value));
+            let NewQty = parseInt(e.target.value);
+            if (NewQty > Item.AvailableStock) {
+                NewQty = Item.AvailableStock;
+            }
+            UpdateQuantity(Index, NewQty);
         });
+
         document.getElementById(`Remove-${Index}`).addEventListener("click", () => {
             RemoveItem(Index);
         });

@@ -118,9 +118,6 @@ class Customer extends Account {
   }
 }
 
-// ============================
-// Admin Class
-// ============================
 class Admin extends Account {
   constructor(Username, Password) {
     super(Username, null, Password, true);
@@ -151,24 +148,3 @@ class Admin extends Account {
     return Account;
   }
 }
-
-//tester is good but can't be kept due to not being used.
-//"I'm sorry young one"
-// Add new Customer
-//const customer1 = new Customer(
-// 'Customer3',
-//  'customer3@example.com',
-//  'pass789',
-//  '55 Queen St, Brisbane',s
-//  'PayPal'
-//);
-//customer1.save();
-
-//const admin1 = new Admin('Admin3', 'adminpass3');
-//admin1.save();
-
-//console.log('\nAll Customers:', Customer.getAll());
-//console.log('\nAll Admins:', Admin.getAll());
-
-//const sampleCustomerID = Customer.getAll()[0].AccountID;
-//console.log(`\nLookup Customer by ID (${sampleCustomerID}):`, Customer.getByID(sampleCustomerID));
