@@ -1,5 +1,6 @@
 // OrderManager.js - Generates and downloads order.txt from shopping cart with user account data
 // Also saves order details to database.json
+// Admins can view all orders from the database
 
 function GetUserData() {
     // Try to get logged-in user from localStorage
@@ -232,16 +233,228 @@ function DownloadOrderFile() {
     console.log("Order file downloaded successfully!");
 }
 
-// Optional: Function to preview order before downloading
-function PreviewOrder() {
-    const OrderText = GenerateOrderText();
+// ADMIN FUNCTIONALITY: View All Orders
+function CreateOrdersViewModal() {
+    const Modal = document.createElement('div');
+    Modal.id = 'OrdersViewModal';
+    Modal.className = 'modal fade';
+    Modal.setAttribute('tabindex', '-1');
+    Modal.setAttribute('aria-labelledby', 'ordersViewModalLabel');
+    Modal.setAttribute('aria-hidden', 'true');
     
-    if (!OrderText) {
+    Modal.innerHTML = `
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ordersViewModalLabel">All Customer Orders</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orders-filter" class="mb-3">
+                        <input type="text" id="order-search" class="form-control" placeholder="Search by Order ID, Customer, or Email...">
+                    </div>
+                    <div id="orders-list">
+                        <p class="text-center">Loading orders...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return Modal;
+}
+
+async function LoadAllOrders() {
+    try {
+        const response = await fetch('http://localhost:5000/database');
+        const database = await response.json();
+        
+        const orders = database.Orders || [];
+        
+        if (orders.length === 0) {
+            document.getElementById('orders-list').innerHTML = `
+                <div class="alert alert-info text-center">
+                    No orders found in the database.
+                </div>
+            `;
+            return;
+        }
+        
+        // Sort orders by timestamp (newest first)
+        orders.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
+        
+        DisplayOrders(orders);
+        
+        // Add search functionality
+        const searchInput = document.getElementById('order-search');
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            const filteredOrders = orders.filter(order => 
+                order.OrderID.toLowerCase().includes(query) ||
+                order.CustomerInfo.Username.toLowerCase().includes(query) ||
+                order.CustomerInfo.Email.toLowerCase().includes(query)
+            );
+            DisplayOrders(filteredOrders);
+        });
+        
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('orders-list').innerHTML = `
+            <div class="alert alert-danger text-center">
+                Failed to load orders. Please try again.
+            </div>
+        `;
+    }
+}
+
+function DisplayOrders(orders) {
+    const ordersListDiv = document.getElementById('orders-list');
+    
+    if (orders.length === 0) {
+        ordersListDiv.innerHTML = `
+            <div class="alert alert-warning text-center">
+                No orders match your search.
+            </div>
+        `;
         return;
     }
     
-    // Display in a modal or alert
-    alert(OrderText);
+    let ordersHTML = '';
+    
+    orders.forEach(order => {
+        const itemsList = order.Items.map(item => 
+            `<li>${item.Name} - Qty: ${item.Quantity} - $${item.Subtotal.toFixed(2)}</li>`
+        ).join('');
+        
+        ordersHTML += `
+            <div class="card mb-3">
+                <div class="card-header bg-primary text-white">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Order ID:</strong> ${order.OrderID}
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <strong>Date:</strong> ${order.Date}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Customer Information</h6>
+                            <p>
+                                <strong>Name:</strong> ${order.CustomerInfo.Username}<br>
+                                <strong>Email:</strong> ${order.CustomerInfo.Email}<br>
+                                <strong>Account ID:</strong> ${order.CustomerInfo.AccountID}<br>
+                                <strong>Delivery Address:</strong> ${order.CustomerInfo.DeliveryAddress}<br>
+                                <strong>Payment Method:</strong> ${order.CustomerInfo.PaymentMethod}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Order Details</h6>
+                            <p>
+                                <strong>Time:</strong> ${order.Time}<br>
+                                <strong>Total Items:</strong> ${order.TotalItems}<br>
+                                <strong>Total Amount:</strong> $${order.TotalAmount.toFixed(2)}<br>
+                                <strong>Status:</strong> <span class="badge bg-success">${order.Status}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>Items Ordered</h6>
+                    <ul>
+                        ${itemsList}
+                    </ul>
+                    <div class="text-end">
+                        <button class="btn btn-sm btn-info download-order-btn" data-order-id="${order.OrderID}">
+                            Download Order Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    ordersListDiv.innerHTML = ordersHTML;
+    
+    // Add download functionality for individual orders
+    document.querySelectorAll('.download-order-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const orderID = e.target.getAttribute('data-order-id');
+            const order = orders.find(o => o.OrderID === orderID);
+            if (order) {
+                DownloadIndividualOrder(order);
+            }
+        });
+    });
+}
+
+function DownloadIndividualOrder(order) {
+    let orderText = "";
+    orderText += "═══════════════════════════════════════════════════════\n";
+    orderText += "                    SWINSOFT ORDER RECEIPT              \n";
+    orderText += "═══════════════════════════════════════════════════════\n\n";
+    
+    orderText += `Order ID: ${order.OrderID}\n`;
+    orderText += `Date: ${order.Date}\n`;
+    orderText += `Time: ${order.Time}\n\n`;
+    
+    orderText += "───────────────────────────────────────────────────────\n";
+    orderText += "CUSTOMER INFORMATION\n";
+    orderText += "───────────────────────────────────────────────────────\n\n";
+    orderText += `Account ID: ${order.CustomerInfo.AccountID}\n`;
+    orderText += `Username: ${order.CustomerInfo.Username}\n`;
+    orderText += `Email: ${order.CustomerInfo.Email}\n`;
+    orderText += `Delivery Address: ${order.CustomerInfo.DeliveryAddress}\n`;
+    orderText += `Payment Method: ${order.CustomerInfo.PaymentMethod}\n\n`;
+    
+    orderText += "───────────────────────────────────────────────────────\n";
+    orderText += "ORDER ITEMS\n";
+    orderText += "───────────────────────────────────────────────────────\n\n";
+    
+    order.Items.forEach((item, index) => {
+        orderText += `${index + 1}. ${item.Name}\n`;
+        orderText += `   Price: $${item.Price.toFixed(2)}\n`;
+        orderText += `   Quantity: ${item.Quantity}\n`;
+        orderText += `   Subtotal: $${item.Subtotal.toFixed(2)}\n\n`;
+    });
+    
+    orderText += "───────────────────────────────────────────────────────\n";
+    orderText += `TOTAL ITEMS: ${order.TotalItems}\n`;
+    orderText += `TOTAL AMOUNT: $${order.TotalAmount.toFixed(2)}\n`;
+    orderText += "───────────────────────────────────────────────────────\n\n";
+    orderText += "Thank you for shopping with Swinsoft!\n";
+    orderText += "═══════════════════════════════════════════════════════\n";
+    
+    // Download
+    const blob = new Blob([orderText], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${order.OrderID}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
+function ShowOrdersViewModal() {
+    const UserData = GetUserData();
+    
+    // Check if user is admin
+    if (!UserData || UserData.type !== 'Admin') {
+        alert('Only administrators can view all orders.');
+        return;
+    }
+    
+    const ModalElement = document.getElementById('OrdersViewModal');
+    const Modal = new bootstrap.Modal(ModalElement);
+    Modal.show();
+    
+    // Load orders when modal opens
+    LoadAllOrders();
 }
 
 // Optional: Add download button to cart modal
@@ -279,10 +492,33 @@ function AddDownloadButtonToCart() {
             ModalFooter.appendChild(DownloadBtn);
         }
     }
+    
+    // Add "View All Orders" button for admins
+    const UserData = GetUserData();
+    if (UserData && UserData.type === 'Admin') {
+        if (!document.getElementById("ViewAllOrdersBtn")) {
+            const ViewOrdersBtn = document.createElement("button");
+            ViewOrdersBtn.id = "ViewAllOrdersBtn";
+            ViewOrdersBtn.className = "btn btn-info";
+            ViewOrdersBtn.textContent = "View All Orders";
+            ViewOrdersBtn.onclick = ShowOrdersViewModal;
+            
+            const CloseBtn = ModalFooter.querySelector('[data-bs-dismiss="modal"]');
+            if (CloseBtn) {
+                ModalFooter.insertBefore(ViewOrdersBtn, CloseBtn);
+            } else {
+                ModalFooter.appendChild(ViewOrdersBtn);
+            }
+        }
+    }
 }
 
 // Initialize when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
+    // Create orders view modal
+    const OrdersModal = CreateOrdersViewModal();
+    document.body.appendChild(OrdersModal);
+    
     // Wait a bit for the cart modal to be created
     setTimeout(() => {
         AddDownloadButtonToCart();

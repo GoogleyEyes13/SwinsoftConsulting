@@ -13,16 +13,50 @@
         },
         {
             "AccountID": "ACC-1762400801993-3066",
-            "Username": "Lebron James",
+            "DeliveryAddress": "123",
             "Email": "LBJ@gmail.com",
             "Password": "123",
-            "DeliveryAddress": "123",
-            "PaymentMethod": "Credit Card"
+            "PaymentMethod": "Credit Card",
+            "Username": "Lebron James"
+        },
+        {
+            "AccountID": "ACC-1762432080571-9362",
+            "DeliveryAddress": "12345",
+            "Email": "PayPaul@Pal.com",
+            "Password": "123",
+            "PaymentMethod": "PayPal",
+            "Username": "Paul Paypal"
+        }
+    ],
+    "Orders": [
+        {
+            "CustomerInfo": {
+                "AccountID": "ACC-1762432080571-9362",
+                "DeliveryAddress": "12345",
+                "Email": "PayPaul@Pal.com",
+                "PaymentMethod": "PayPal",
+                "Username": "Paul Paypal"
+            },
+            "Date": "Friday 7 November 2025",
+            "Items": [
+                {
+                    "Name": "White Bread",
+                    "Price": 4.5,
+                    "Quantity": 2,
+                    "Subtotal": 9
+                }
+            ],
+            "OrderID": "ORD-1762437118993-7190",
+            "Status": "Completed",
+            "Time": "12:51:58 am",
+            "Timestamp": "2025-11-06T13:51:58.993Z",
+            "TotalAmount": 9,
+            "TotalItems": 2
         }
     ],
     "Product": [
         {
-            "AvailableStock": "57",
+            "AvailableStock": "67",
             "Category": "Drink",
             "Description": "Mango flavoured energy drink.",
             "Image": "Backend/ProductImages/MangoLoco.png",
