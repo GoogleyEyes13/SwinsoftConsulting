@@ -1,5 +1,7 @@
 class Account {
   static Db = null;
+  static currentUser = null;
+
 
   static Init(Database) {
     Account.Db = Database;
@@ -100,6 +102,7 @@ class Customer extends Account {
       PaymentMethod: this.PaymentMethod
     });
     console.log(`Customer "${this.Username}" saved successfully.`);
+    Account.Persist().catch(err => console.error('Error persisting DB:', err));
   }
 
   static GetAll() {
@@ -131,6 +134,7 @@ class Admin extends Account {
       Password: this.Password
     });
     console.log(`Admin "${this.Username}" saved successfully.`);
+    Account.Persist().catch(err => console.error('Error persisting DB:', err));
   }
 
   static GetAll() {
@@ -148,3 +152,19 @@ class Admin extends Account {
     return Account;
   }
 }
+
+// Add this after the classes
+Account.Persist = async function() {
+  if (!Account.Db) {
+    throw new Error('Database not initialized.');
+  }
+  const response = await fetch('http://localhost:5000/update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Account.Db)
+  });
+  if (!response.ok) {
+    throw new Error('Failed to persist database.');
+  }
+  return response.json();
+};

@@ -1,118 +1,125 @@
 {
-    "Product": [
-        {
-            "Name": "Monster Energy - Mango Loco",
-            "Description": "Mango flavoured energy drink.",
-            "Category": "Drink",
-            "Price": "4.30",
-            "AvailableStock": "57",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/MangoLoco.png"
-        },
-        {
-            "Name": "Deep Cycle Lithium Battery - iTechWorld",
-            "Description": "Powerful, lightweight, bluetooth battery. 120Ah lihtium battery featuring 100% usable capacity.",
-            "Category": "Battery",
-            "Price": "600",
-            "AvailableStock": "10",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/LithiumBattery.png"
-        },
-        {
-            "Name": "Winston - Rabbit",
-            "Description": "An adorable, brown fluffy bunny rabbit.",
-            "Category": "Pets",
-            "Price": "1,000,000",
-            "AvailableStock": "1",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/Winston.png"
-        },
-        {
-            "Name": "White Bread",
-            "Description": "700g of vitamin-rich white sliced bread.",
-            "Category": "Food",
-            "Price": "4.50",
-            "AvailableStock": "80",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/WhiteBread.png"
-        },
-        {
-            "Name": "Nutri Grain",
-            "Description": "Kellogg's protein breakfast cereal.",
-            "Category": "Food",
-            "Price": "8.00",
-            "AvailableStock": "60",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/NutriGrain.png"
-        },
-        {
-            "Name": "UP&GO 6 Pack - Choc Ice",
-            "Description": "A liquid breakfast with protein and fibre.",
-            "Category": "Drink",
-            "Price": "13.00",
-            "AvailableStock": "38",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/UpAndGo.png"
-        },
-        {
-            "Name": "Coloured Pencils 12 Pack",
-            "Description": "12 different coloured pencils to draw, colour or create with.",
-            "Category": "Stationary",
-            "Price": "1.49",
-            "AvailableStock": "20",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/ColouredPencils.png"
-        },
-        {
-            "Name": "USB-C Charging Cable",
-            "Description": "A 1-metre long 60W charging cable with USB-C connectors.",
-            "Category": "Electronics",
-            "Price": "29.00",
-            "AvailableStock": "50",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/Charger.png"
-        },
-        {
-            "Name": "Salt & Vinegar Chips",
-            "Description": "170g of Smiths salt & vinegar flavoued crinkle-cut potato chips.",
-            "Category": "Food",
-            "Price": "5.00",
-            "AvailableStock": "64",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/VinegarChips.png"
-        },
-        {
-            "Name": "Chicken Crimpy Shapes",
-            "Description": "175g of Arnott's Shapes original Chicken Crimpy flavour.",
-            "Category": "Food",
-            "Price": "4.00",
-            "AvailableStock": "57",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/ChickenChips.png"
-        },
-        {
-            "Name": "Flux Capacitor",
-            "Description": "A device capable of opening a hole in the fabric of space time. Made by Doc Brown.",
-            "Category": "Electronics",
-            "Price": "250,000",
-            "AvailableStock": "0",
-            "Supplier": "SwinsoftSupplier",
-            "Image": "Backend/ProductImages/FluxCapacitor.png"
-        }
-    ],
-
-    "CustomerAccounts": [
-        {
-            "Username": "Username1",
-            "Email": "Email1",
-            "Password": "Password1"
-        }
-    ],
-
     "AdminAccounts": [
         {
-            "Username": "Admin1",
-            "Password": "Admin1"
+            "Password": "Admin1",
+            "Username": "Admin1"
         }
-    ]
+    ],
+    "CustomerAccounts": [
+        {
+            "Email": "Email1",
+            "Password": "Password1",
+            "Username": "Username1"
+        },
+        {
+            "AccountID": "ACC-1762400801993-3066",
+            "Username": "Lebron James",
+            "Email": "LBJ@gmail.com",
+            "Password": "123",
+            "DeliveryAddress": "123",
+            "PaymentMethod": "Credit Card"
+        }
+    ],
+    "Product": [
+        {
+            "AvailableStock": "57",
+            "Category": "Drink",
+            "Description": "Mango flavoured energy drink.",
+            "Image": "Backend/ProductImages/MangoLoco.png",
+            "Name": "Monster Energy - Mango Loco",
+            "Price": "4.30",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "10",
+            "Category": "Battery",
+            "Description": "Powerful, lightweight, bluetooth battery. 120Ah lihtium battery featuring 100% usable capacity.",
+            "Image": "Backend/ProductImages/LithiumBattery.png",
+            "Name": "Deep Cycle Lithium Battery - iTechWorld",
+            "Price": "600",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "1",
+            "Category": "Pets",
+            "Description": "An adorable, brown fluffy bunny rabbit.",
+            "Image": "Backend/ProductImages/Winston.png",
+            "Name": "Winston - Rabbit",
+            "Price": "1,000,000",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "80",
+            "Category": "Food",
+            "Description": "700g of vitamin-rich white sliced bread.",
+            "Image": "Backend/ProductImages/WhiteBread.png",
+            "Name": "White Bread",
+            "Price": "4.50",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "60",
+            "Category": "Food",
+            "Description": "Kellogg's protein breakfast cereal.",
+            "Image": "Backend/ProductImages/NutriGrain.png",
+            "Name": "Nutri Grain",
+            "Price": "8.00",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "38",
+            "Category": "Drink",
+            "Description": "A liquid breakfast with protein and fibre.",
+            "Image": "Backend/ProductImages/UpAndGo.png",
+            "Name": "UP&GO 6 Pack - Choc Ice",
+            "Price": "13.00",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "20",
+            "Category": "Stationary",
+            "Description": "12 different coloured pencils to draw, colour or create with.",
+            "Image": "Backend/ProductImages/ColouredPencils.png",
+            "Name": "Coloured Pencils 12 Pack",
+            "Price": "1.49",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "50",
+            "Category": "Electronics",
+            "Description": "A 1-metre long 60W charging cable with USB-C connectors.",
+            "Image": "Backend/ProductImages/Charger.png",
+            "Name": "USB-C Charging Cable",
+            "Price": "29.00",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "64",
+            "Category": "Food",
+            "Description": "170g of Smiths salt & vinegar flavoued crinkle-cut potato chips.",
+            "Image": "Backend/ProductImages/VinegarChips.png",
+            "Name": "Salt & Vinegar Chips",
+            "Price": "5.00",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "57",
+            "Category": "Food",
+            "Description": "175g of Arnott's Shapes original Chicken Crimpy flavour.",
+            "Image": "Backend/ProductImages/ChickenChips.png",
+            "Name": "Chicken Crimpy Shapes",
+            "Price": "4.00",
+            "Supplier": "SwinsoftSupplier"
+        },
+        {
+            "AvailableStock": "0",
+            "Category": "Electronics",
+            "Description": "A device capable of opening a hole in the fabric of space time. Made by Doc Brown.",
+            "Image": "Backend/ProductImages/FluxCapacitor.png",
+            "Name": "Flux Capacitor",
+            "Price": "250,000",
+            "Supplier": "SwinsoftSupplier"
+        }
+    ],
+    "ShoppingCarts": {}
 }

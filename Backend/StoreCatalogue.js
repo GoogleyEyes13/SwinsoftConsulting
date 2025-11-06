@@ -8,10 +8,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Fetching each element in the Product section of the database
     // Then displaying it
-    fetch("Backend/Database.json")
-        .then((Res) => Res.json())
+    fetch("http://localhost:5000/database")
+        .then((Res) => {
+        console.log('Fetch response status:', Res.status);  // Should be 200
+        return Res.json();
+    })
         .then((Data) => {
-            AllProducts = Data.Product;
+            console.log('Loaded data:', Data);
+            Account.Init(Data);
+            AllProducts = Account.Db.Product;
+            console.log('AllProducts:', AllProducts);
             DisplayProducts(AllProducts);
         })
         .catch((Err) => console.error("Error loading JSON:", Err));
@@ -60,7 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".DeleteItemBtn").forEach((Button) => {
             Button.addEventListener("click", (Event) => {
                 const Index = parseInt(Event.target.getAttribute("data-index"));
-                AllProducts.splice(Index, 1); // Remove from the array
+                Account.Db.Product.splice(Index, 1);  // Remove from shared DB
+                Account.Persist().catch(err => console.error('Error persisting DB:', err));  // Persist to server
+                AllProducts = Account.Db.Product;  // Refresh local reference
                 DisplayProducts(AllProducts); // Refresh display
             });
         });
@@ -73,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const SelectedPrice = PriceSelect.value;
         const SelectedAvailability = AvailabilitySelect.value;
 
-        const FilteredProducts = AllProducts.filter((Product) => {
+        const FilteredProducts = Account.Db.Product.filter((Product) => {  // Use shared DB
             const PriceValue = parseFloat(Product.Price.replace(/[^0-9.]/g, "")) || 0;
             const StockValue = parseInt(Product.AvailableStock, 10) || 0;
 

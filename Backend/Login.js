@@ -11,20 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const AuthModal = CreateAuthModal();
     document.body.appendChild(AuthModal);
 
-    fetch("Backend/Database.json")
+    fetch("http://localhost:5000/database")
         .then((Res) => Res.json())
         .then((Data) => {
             Account.Init(Data);
         })
         .catch((Err) => console.error("Error loading JSON:", Err));
 
-    // Local storage checks to bluff
-    const LoggedInUser = localStorage.getItem('LoggedInUser');
-    if (LoggedInUser) {
-        UpdateButtonToLogout(LoginButton);
-    } else {
-        UpdateButtonToLogin(LoginButton);
-    }
+    // No localStorage - start as logged out
+    let loggedInUser = null;
+    UpdateButtonToLogin(LoginButton);
 
     LoginButton.addEventListener('click', () => {
         if (LoginButton.textContent === 'LogIn') {
@@ -131,6 +127,8 @@ function ShowAuthModal() {
     }
 }
 
+let loggedInUser = null;  // Global variable for logged-in user (in-memory, no storage)
+
 function HandleLoginSubmit(Event) {
     Event.preventDefault();
     const Username = document.getElementById('LoginUsername').value.trim();
@@ -138,12 +136,13 @@ function HandleLoginSubmit(Event) {
 
     const Result = Account.Login(Username, Password);
     if (Result.success) {
-        localStorage.setItem('LoggedInUser', JSON.stringify(Result.user));
+        loggedInUser = Result.user;  // Set in-memory
+        Account.currentUser = user;
         UpdateButtonToLogout(document.querySelector(".btn.btn-primary[style*='float: right']"));
         const ModalInstance = bootstrap.Modal.getInstance(document.getElementById('AuthModal'));
         if (ModalInstance) ModalInstance.hide();
 
-        location.reload();
+        location.reload();  // Reload to refresh UI (e.g., admin features in catalogue)
     }
 }
 
@@ -161,23 +160,26 @@ function HandleSignupSubmit(Event) {
     if (Result.success) {
         const loginResult = Account.Login(Username, Password);
         if (loginResult.success) {
-            localStorage.setItem('LoggedInUser', JSON.stringify(loginResult.user));
+            loggedInUser = loginResult.user;  // Set in-memory
+            Account.currentUser = user;
+
 
             const ModalInstance = bootstrap.Modal.getInstance(document.getElementById('AuthModal'));
             if (ModalInstance) ModalInstance.hide();
 
             document.getElementById('SignupForm').reset();
 
-            location.reload();
+            location.reload();  // Reload to refresh UI
         }
     }
 }
 
 function HandleLogout(Button) {
-    localStorage.removeItem('LoggedInUser');
+    loggedInUser = null;  // Clear in-memory
+    Account.currentUser = null;
     UpdateButtonToLogin(Button);
 
-    location.reload();
+    location.reload();  // Reload to refresh UI
 }
 
 function UpdateButtonToLogin(Button) {
@@ -187,3 +189,4 @@ function UpdateButtonToLogin(Button) {
 function UpdateButtonToLogout(Button) {
     Button.textContent = 'LogOut';
 }
+
