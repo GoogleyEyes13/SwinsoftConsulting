@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// the fun begins
+// Create Authentication Modal
 function CreateAuthModal() {
     const Modal = document.createElement('div');
     Modal.className = 'modal fade';
@@ -110,7 +110,7 @@ function CreateAuthModal() {
     return Modal;
 }
 
-// the horror begins
+// Show Authentication Modal
 function ShowAuthModal() {
     const ModalElement = document.getElementById('AuthModal');
     if (!ModalElement) return console.error('AuthModal not found in DOM');
@@ -133,6 +133,7 @@ function ShowAuthModal() {
     }
 }
 
+// Handle Login Form Submission
 function HandleLoginSubmit(Event) {
     Event.preventDefault();
     const Username = document.getElementById('LoginUsername').value.trim();
@@ -140,21 +141,30 @@ function HandleLoginSubmit(Event) {
 
     const Result = Account.Login(Username, Password);
     if (Result.success) {
-        localStorage.setItem('loggedInUser', JSON.stringify(Result.user));  // Save to localStorage
+        // Save user data to localStorage
+        localStorage.setItem('loggedInUser', JSON.stringify(Result.user));
         window.loggedInUser = Result.user;
-        UpdateButtonToLogout(document.querySelector(".btn.btn-primary[style*='float: right']"));
+        
+        // Update button
+        const LoginButton = Array.from(document.querySelectorAll(".btn.btn-primary"))
+            .find(btn => btn.textContent.trim() === "LogIn" || btn.textContent.trim() === "LogOut");
+        if (LoginButton) {
+            UpdateButtonToLogout(LoginButton);
+        }
+        
+        // Close modal
         const ModalInstance = bootstrap.Modal.getInstance(document.getElementById('AuthModal'));
         if (ModalInstance) ModalInstance.hide();
 
-        // Refresh catalogue without full reload if needed
-        if (typeof window.refreshCatalogue === 'function') {
-            window.refreshCatalogue();
-        } else {
-            location.reload();
-        }
+
+        // AUTO REFRESH THE PAGE
+        window.location.reload();
+    } else {
+        alert('Invalid username or password.');
     }
 }
 
+// Handle Signup Form Submission
 function HandleSignupSubmit(Event) {
     Event.preventDefault();
     const Username = document.getElementById('SignupUsername').value.trim();
@@ -163,47 +173,66 @@ function HandleSignupSubmit(Event) {
     const DeliveryAddress = document.getElementById('DeliveryAddress').value.trim();
     const PaymentMethod = document.getElementById('PaymentMethod').value;
 
-    if (!Username || !Email || !Password || !DeliveryAddress || !PaymentMethod) return;
+    if (!Username || !Email || !Password || !DeliveryAddress || !PaymentMethod) {
+        alert('Please fill in all fields.');
+        return;
+    }
 
     const Result = Account.CreateCustomer(Username, Email, Password, DeliveryAddress, PaymentMethod);
     if (Result.success) {
+        // Automatically log in after successful signup
         const loginResult = Account.Login(Username, Password);
         if (loginResult.success) {
-            localStorage.setItem('loggedInUser', JSON.stringify(loginResult.user));  // Save to localStorage
+            // Save user data to localStorage
+            localStorage.setItem('loggedInUser', JSON.stringify(loginResult.user));
             window.loggedInUser = loginResult.user;
 
+            // Close modal
             const ModalInstance = bootstrap.Modal.getInstance(document.getElementById('AuthModal'));
             if (ModalInstance) ModalInstance.hide();
 
+            // Reset form
             document.getElementById('SignupForm').reset();
 
-            // Refresh catalogue without full reload if needed
-            if (typeof window.refreshCatalogue === 'function') {
-                window.refreshCatalogue();
-            } else {
-                location.reload();
-            }
+            // Show success message
+            alert(`Account created successfully! Welcome, ${loginResult.user.Username}!`);
+
+            // AUTO REFRESH THE PAGE
+            window.location.reload();
         }
-    }
-}
-
-function HandleLogout(Button) {
-    localStorage.removeItem('loggedInUser');  // Clear localStorage
-    window.loggedInUser = null;
-    UpdateButtonToLogin(Button);
-
-    // Refresh catalogue without full reload if needed
-    if (typeof window.refreshCatalogue === 'function') {
-        window.refreshCatalogue();
     } else {
-        location.reload();
+        alert('Failed to create account. Username or email may already exist.');
     }
 }
 
-function UpdateButtonToLogin(Button) {
-    Button.textContent = 'LogIn';
+// Handle Logout
+function HandleLogout(Button) {
+    // Clear user data
+    localStorage.removeItem('loggedInUser');
+    window.loggedInUser = null;
+    
+    // Update button
+    UpdateButtonToLogin(Button);
+    
+
+    // AUTO REFRESH THE PAGE
+    window.location.reload();
 }
 
+// Update Button to Login State
+function UpdateButtonToLogin(Button) {
+    if (Button) {
+        Button.textContent = 'LogIn';
+        Button.classList.remove('btn-primary');
+        Button.classList.add('btn-primary');
+    }
+}
+
+// Update Button to Logout State
 function UpdateButtonToLogout(Button) {
-    Button.textContent = 'LogOut';
+    if (Button) {
+        Button.textContent = 'LogOut';
+        Button.classList.remove('btn-primary');
+        Button.classList.add('btn-primary');
+    }
 }
