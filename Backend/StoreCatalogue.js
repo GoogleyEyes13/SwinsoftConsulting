@@ -10,8 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         FilterProducts();
     };
 
-    // Fetching each element in the Product section of the database
-    // Then displaying it
+
     fetch("http://localhost:5000/database")
         .then((Res) => {
             console.log('Fetch response status:', Res.status);
@@ -24,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log('AllProducts:', AllProducts);
             DisplayProducts(AllProducts);
             
-            // Add "Add New Product" button for admins
             AddNewProductButton();
         })
         .catch((Err) => console.error("Error loading JSON:", Err));
@@ -32,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function DisplayProducts(Products) {
         ProductList.innerHTML = "";
 
-        // If no items are found, display a message to user
+
         if (Products.length === 0) {
             ProductList.innerHTML = `<h5>No products found.</h5>`;
             return;
@@ -43,10 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
             // Check if user is admin
             const IsAdmin = window.loggedInUser && window.loggedInUser.type === "Admin";
             
-            // Change button text based on user type (keep same color - primary blue)
-            const ButtonText = IsAdmin ? "Edit" : "Add to Cart";
-            const ButtonClass = "btn btn-primary AddToCartBtn"; // Same color for both
             
+            const ButtonText = IsAdmin ? "Edit" : "Add to Cart";
+            const ButtonClass = "btn btn-primary AddToCartBtn";             
             const Card = `
                 <div class="col-sm-6 col-md-3 col-lg-3">
                     <div class="card shadow-sm StoreCatalogueCard">
@@ -73,16 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const IsAdmin = window.loggedInUser && window.loggedInUser.type === "Admin";
                 
                 if (IsAdmin) {
-                    // Admin clicks "Edit" - open edit function
+                    
                     EditProduct(Product);
                 } else {
-                    // Customer clicks "Add to Cart" - add to cart
-                    AddToCart(Product); // Calls the function from ShoppingCart.js
+                    
+                    AddToCart(Product); 
                 }
             });
         });
 
-        // Attach event listeners to Delete buttons (for admins only)
+        // Attach event listeners to Delete buttons
         document.querySelectorAll(".DeleteItemBtn").forEach((Button) => {
             Button.addEventListener("click", (Event) => {
                 const ProductName = Event.target.getAttribute("data-product-name");
@@ -152,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Function to add new product for admins (using prompts)
+    // Function to add new product for admins 
     function AddNewProduct() {
         // Prompt for all product details
         const Name = prompt("Enter product name:");

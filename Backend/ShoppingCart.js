@@ -55,7 +55,7 @@ function UpdateQuantity(Index, NewQty) {
     RenderCartItems();
 }
 
-// Displaying shopping cart
+
 function CreateCartModal() {
     const Modal = document.createElement("div");
     Modal.className = "modal fade";

@@ -1,6 +1,4 @@
 // PaymentProcessor.js - Handles payment collection before order download
-// Supported methods: Credit Card, PayPal, Bank Transfer
-
 let currentPaymentData = null;
 
 function GetUserData() {
@@ -85,7 +83,6 @@ function RenderPaymentFields(paymentMethod) {
     const method = paymentMethod.toLowerCase();
     
     if (method.includes('credit') || method.includes('debit') || method === 'card') {
-        // Credit/Debit Card
         fieldsHTML = `
             <div class="mb-3">
                 <label for="card-number" class="form-label">Card Number</label>
@@ -111,7 +108,6 @@ function RenderPaymentFields(paymentMethod) {
             </div>
         `;
     } else if (method.includes('paypal')) {
-        // PayPal
         fieldsHTML = `
             <div class="mb-3">
                 <label for="paypal-email" class="form-label">PayPal Email</label>
@@ -125,7 +121,6 @@ function RenderPaymentFields(paymentMethod) {
             </div>
         `;
     } else if (method.includes('bank') || method.includes('transfer')) {
-        // Bank Transfer
         fieldsHTML = `
             <div class="mb-3">
                 <label for="bank-name" class="form-label">Bank Name</label>
@@ -149,7 +144,6 @@ function RenderPaymentFields(paymentMethod) {
             </div>
         `;
     } else {
-        // Unsupported payment method
         fieldsHTML = `
             <div class="alert alert-warning">
                 <strong>Unsupported payment method: ${paymentMethod}</strong><br>
@@ -166,12 +160,12 @@ function RenderPaymentFields(paymentMethod) {
     
     PaymentFieldsContainer.innerHTML = fieldsHTML;
     
-    // Add input formatting
+
     AddInputFormatting();
 }
 
 function AddInputFormatting() {
-    // Card number formatting (add spaces every 4 digits)
+
     const CardNumberInput = document.getElementById('card-number');
     if (CardNumberInput) {
         CardNumberInput.addEventListener('input', (e) => {
@@ -182,7 +176,7 @@ function AddInputFormatting() {
         });
     }
     
-    // Expiry date formatting (MM/YY)
+
     const ExpiryInput = document.getElementById('card-expiry');
     if (ExpiryInput) {
         ExpiryInput.addEventListener('input', (e) => {
@@ -194,7 +188,6 @@ function AddInputFormatting() {
         });
     }
     
-    // CVV - numbers only
     const CVVInput = document.getElementById('card-cvv');
     if (CVVInput) {
         CVVInput.addEventListener('input', (e) => {
@@ -202,7 +195,7 @@ function AddInputFormatting() {
         });
     }
     
-    // BSB formatting (XXX-XXX)
+
     const BSBInput = document.getElementById('bsb-number');
     if (BSBInput) {
         BSBInput.addEventListener('input', (e) => {
@@ -250,7 +243,7 @@ function ShowPaymentModal() {
     // Render appropriate payment fields
     RenderPaymentFields(PaymentMethod);
     
-    // Show modal (Bootstrap 5)
+    // Show modal
     const ModalElement = document.getElementById('PaymentModal');
     const Modal = new bootstrap.Modal(ModalElement);
     Modal.show();
@@ -267,17 +260,14 @@ function CollectPaymentData() {
     };
     
     if (PaymentMethod.includes('credit') || PaymentMethod.includes('debit') || PaymentMethod === 'card') {
-        // Credit/Debit Card
         paymentData.cardNumber = document.getElementById('card-number')?.value || '';
         paymentData.cardExpiry = document.getElementById('card-expiry')?.value || '';
         paymentData.cardCVV = document.getElementById('card-cvv')?.value || '';
         paymentData.cardholderName = document.getElementById('card-name')?.value || '';
     } else if (PaymentMethod.includes('paypal')) {
-        // PayPal
         paymentData.paypalEmail = document.getElementById('paypal-email')?.value || '';
         paymentData.paypalPassword = '********'; // Don't store actual password
     } else if (PaymentMethod.includes('bank') || PaymentMethod.includes('transfer')) {
-        // Bank Transfer
         paymentData.bankName = document.getElementById('bank-name')?.value || '';
         paymentData.accountNumber = document.getElementById('account-number')?.value || '';
         paymentData.bsbNumber = document.getElementById('bsb-number')?.value || '';
@@ -391,10 +381,6 @@ function ProcessPayment() {
             // Clear payment data
             currentPaymentData = null;
             
-            // Optionally clear cart after successful order
-            // localStorage.removeItem('ShoppingCart');
-            // if (typeof RenderCartItems === 'function') RenderCartItems();
-            
         }, 1500);
     }, 1500);
 }
@@ -412,7 +398,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         const DownloadBtn = document.getElementById('DownloadOrderBtn');
         if (DownloadBtn) {
-            // Remove old click handler and add new one
             const NewDownloadBtn = DownloadBtn.cloneNode(true);
             DownloadBtn.parentNode.replaceChild(NewDownloadBtn, DownloadBtn);
             
