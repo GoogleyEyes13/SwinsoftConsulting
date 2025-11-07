@@ -75,10 +75,17 @@ function CreateAuthModal() {
                         <div class="tab-pane fade" id="Signup" role="tabpanel" aria-labelledby="SignupTab">
                             <form id="SignupForm" class="mt-3">
                                 <div class="mb-3">
+                                    <label for="AccountType" class="form-label">Account Type</label>
+                                    <select class="form-control" id="AccountType" name="AccountType" required>
+                                        <option value="customer">Customer</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
                                     <label for="SignupUsername" class="form-label">Username</label>
                                     <input type="text" class="form-control" id="SignupUsername" required>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-3" id="EmailField">
                                     <label for="SignupEmail" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="SignupEmail" required>
                                 </div>
@@ -86,18 +93,25 @@ function CreateAuthModal() {
                                     <label for="SignupPassword" class="form-label">Password</label>
                                     <input type="password" class="form-control" id="SignupPassword" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="DeliveryAddress" class="form-label">Delivery Address</label>
-                                    <input type="text" class="form-control" id="DeliveryAddress" required>
+                                <div class="mb-3" id="SecretCodeField" style="display: none;">
+                                    <label for="SecretCode" class="form-label">Secret Code</label>
+                                    <input type="password" class="form-control" id="SecretCode" placeholder="Enter admin secret code">
+                                    <small class="form-text text-muted">Required for admin account creation</small>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="PaymentMethod" class="form-label">Payment Method</label>
-                                    <select class="form-control" id="PaymentMethod" required>
-                                        <option value="">Select...</option>
-                                        <option value="Credit Card">Credit Card</option>
-                                        <option value="PayPal">PayPal</option>
-                                        <option value="Bank Transfer">Bank Transfer</option>
-                                    </select>
+                                <div id="CustomerFields">
+                                    <div class="mb-3">
+                                        <label for="DeliveryAddress" class="form-label">Delivery Address</label>
+                                        <input type="text" class="form-control" id="DeliveryAddress" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="PaymentMethod" class="form-label">Payment Method</label>
+                                        <select class="form-control" id="PaymentMethod" required>
+                                            <option value="">Select...</option>
+                                            <option value="Credit Card">Credit Card</option>
+                                            <option value="PayPal">PayPal</option>
+                                            <option value="Bank Transfer">Bank Transfer</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Sign Up</button>
                             </form>
@@ -130,6 +144,36 @@ function ShowAuthModal() {
         const NewSignupForm = SignupForm.cloneNode(true);
         SignupForm.parentNode.replaceChild(NewSignupForm, SignupForm);
         NewSignupForm.addEventListener('submit', HandleSignupSubmit);
+        
+        // Add event listener for account type dropdown
+        const AccountTypeSelect = document.getElementById('AccountType');
+        const SecretCodeField = document.getElementById('SecretCodeField');
+        const CustomerFields = document.getElementById('CustomerFields');
+        const EmailField = document.getElementById('EmailField');
+        const DeliveryAddress = document.getElementById('DeliveryAddress');
+        const PaymentMethod = document.getElementById('PaymentMethod');
+        const SecretCode = document.getElementById('SecretCode');
+        const SignupEmail = document.getElementById('SignupEmail');
+        
+        AccountTypeSelect.addEventListener('change', () => {
+            if (AccountTypeSelect.value === 'customer') {
+                SecretCodeField.style.display = 'none';
+                CustomerFields.style.display = 'block';
+                EmailField.style.display = 'block';
+                SecretCode.required = false;
+                SignupEmail.required = true;
+                DeliveryAddress.required = true;
+                PaymentMethod.required = true;
+            } else if (AccountTypeSelect.value === 'admin') {
+                SecretCodeField.style.display = 'block';
+                CustomerFields.style.display = 'none';
+                EmailField.style.display = 'none';
+                SecretCode.required = true;
+                SignupEmail.required = false;
+                DeliveryAddress.required = false;
+                PaymentMethod.required = false;
+            }
+        });
     }
 }
 
@@ -167,18 +211,53 @@ function HandleLoginSubmit(Event) {
 // Handle Signup Form Submission
 function HandleSignupSubmit(Event) {
     Event.preventDefault();
+    
+    const AccountType = document.getElementById('AccountType').value;
     const Username = document.getElementById('SignupUsername').value.trim();
-    const Email = document.getElementById('SignupEmail').value.trim();
     const Password = document.getElementById('SignupPassword').value.trim();
-    const DeliveryAddress = document.getElementById('DeliveryAddress').value.trim();
-    const PaymentMethod = document.getElementById('PaymentMethod').value;
-
-    if (!Username || !Email || !Password || !DeliveryAddress || !PaymentMethod) {
-        alert('Please fill in all fields.');
+    
+    if (!Username || !Password) {
+        alert('Please fill in username and password.');
         return;
     }
-
-    const Result = Account.CreateCustomer(Username, Email, Password, DeliveryAddress, PaymentMethod);
+    
+    let Result;
+    
+    if (AccountType === 'admin') {
+        const SecretCode = document.getElementById('SecretCode').value.trim();
+        
+        if (!SecretCode) {
+            alert('Please enter the admin secret code.');
+            return;
+        }
+        
+        // Create admin account - Account.CreateAdmin handles secret code validation
+        Result = Account.CreateAdmin(Username, Password, SecretCode);
+        
+        if (!Result.success) {
+            alert(Result.message || 'Invalid secret code. Admin account creation denied.');
+            return;
+        }
+        
+    } else {
+        // Create customer account
+        const Email = document.getElementById('SignupEmail').value.trim();
+        const DeliveryAddress = document.getElementById('DeliveryAddress').value.trim();
+        const PaymentMethod = document.getElementById('PaymentMethod').value;
+        
+        if (!Email || !DeliveryAddress || !PaymentMethod) {
+            alert('Please fill in all customer fields.');
+            return;
+        }
+        
+        Result = Account.CreateCustomer(Username, Email, Password, DeliveryAddress, PaymentMethod);
+        
+        if (!Result.success) {
+            alert(Result.message || 'Failed to create account. Username or email may already exist.');
+            return;
+        }
+    }
+    
     if (Result.success) {
         // Automatically log in after successful signup
         const loginResult = Account.Login(Username, Password);
@@ -195,13 +274,12 @@ function HandleSignupSubmit(Event) {
             document.getElementById('SignupForm').reset();
 
             // Show success message
-            alert(`Account created successfully! Welcome, ${loginResult.user.Username}!`);
+            const accountTypeMsg = AccountType === 'admin' ? 'Admin' : 'Customer';
+            alert(`${accountTypeMsg} account created successfully! Welcome, ${loginResult.user.Username}!`);
 
             // AUTO REFRESH THE PAGE
             window.location.reload();
         }
-    } else {
-        alert('Failed to create account. Username or email may already exist.');
     }
 }
 
